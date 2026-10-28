@@ -16,7 +16,18 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        zhabiy {
+            storeFile file('zhabiy.keystore')
+            storePassword 'zhabiy-planer'
+            keyAlias 'zhabiy'
+            keyPassword 'zhabiy-planer'
+        }
+    }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.zhabiy
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

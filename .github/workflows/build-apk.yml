@@ -2,7 +2,11 @@ name: Собрать APK
 
 on:
   push:
+    branches: [main]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -37,3 +41,19 @@ jobs:
         with:
           name: zhabiy-planer-apk
           path: android/app/build/outputs/apk/debug/zhabiy-planer.apk
+
+      - name: Выложить APK в релиз
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete latest --yes --cleanup-tag || true
+          gh release create latest android/app/build/outputs/apk/debug/zhabiy-planer.apk \
+            --title "Жабий планер" \
+            --notes "Свежая сборка. Скачай zhabiy-planer.apk на телефон и открой его, чтобы установить." --latest
+
+      - name: Положить APK в ветку apk
+        run: |
+          mkdir /tmp/apk && cp android/app/build/outputs/apk/debug/zhabiy-planer.apk /tmp/apk/
+          cd /tmp/apk && git init -q -b apk && git add . \
+            && git -c user.name=github-actions -c user.email=actions@github.com commit -qm "APK" \
+            && git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" apk
