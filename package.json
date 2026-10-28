@@ -1,0 +1,22 @@
+{
+  "name": "zhabiy-planer",
+  "version": "1.0.0",
+  "description": "Жабий планер для Android",
+  "scripts": {
+    "sync": "cap sync android",
+    "open": "cap open android"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/cli": "^8.5.3",
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/local-notifications": "^8.3.1",
+    "@fontsource/neucha": "^5.3.0",
+    "@fontsource/nunito": "^5.3.0"
+  },
+  "private": true
+}

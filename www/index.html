@@ -1,0 +1,1206 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Жабий планер</title>
+<style>
+@font-face{font-family:'Neucha';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/neucha-cyrillic-400-normal.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:'Neucha';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/neucha-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/nunito-cyrillic-400-normal.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/nunito-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/nunito-cyrillic-600-normal.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/nunito-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:800;font-display:swap;src:url(fonts/nunito-cyrillic-800-normal.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:800;font-display:swap;src:url(fonts/nunito-latin-800-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);-webkit-text-size-adjust:100%}
+body{margin:0;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
+[hidden]{display:none!important}
+img{max-width:100%}
+
+/* Layout: одна колонка-«блокнот» с вкладками; день открывается шторкой с почасовым списком, неделя — сеткой часов */
+:root{
+  --bg:#f3f9ee; --surface:#ffffff; --soft-green:#e2f2d6; --soft-pink:#fde3ea;
+  --green:#86c766; --green-deep:#3d7a2a; --pink:#f6b3c6; --pink-deep:#df6688;
+  --fg:#27331f; --muted:#6b7a62; --line:#d5e6c8;
+  --frog:#8fcf6b; --frog-dark:#5fa443; --belly:#fbfff6; --ink:#1f2a1a;
+  --c-personal:#df6688; --c-study:#4f97d6; --c-work:#4f9a36; --c-meet:#9670dc; --c-health:#e0952a; --c-other:#8a9a82;
+  --shadow:0 2px 0 #cfe3bf;
+  --display:"Neucha","Comic Sans MS",cursive;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141c15; --surface:#1d281e; --soft-green:#253823; --soft-pink:#3d2430;
+  --green:#7dbd5c; --green-deep:#a6dc85; --pink:#c4708a; --pink-deep:#f492ad;
+  --fg:#edf5e6; --muted:#a3b29a; --line:#304330; --belly:#e9f5dc; --shadow:0 2px 0 #0c120c;
+  --c-personal:#f492ad; --c-study:#8ec3f0; --c-work:#8fcf6b; --c-meet:#c3a5f2; --c-health:#f2c06a; --c-other:#a3b29a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141c15; --surface:#1d281e; --soft-green:#253823; --soft-pink:#3d2430;
+  --green:#7dbd5c; --green-deep:#a6dc85; --pink:#c4708a; --pink-deep:#f492ad;
+  --fg:#edf5e6; --muted:#a3b29a; --line:#304330; --belly:#e9f5dc; --shadow:0 2px 0 #0c120c;
+  --c-personal:#f492ad; --c-study:#8ec3f0; --c-work:#8fcf6b; --c-meet:#c3a5f2; --c-health:#f2c06a; --c-other:#a3b29a; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 96px}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:16px;width:100%}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance}
+h3{font-size:1.4rem}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--pink-deep);outline-offset:2px;border-radius:8px}
+.frog{display:block;flex:none}
+mark{background:var(--pink);color:var(--fg);border-radius:4px;padding:0 2px}
+
+header.top{display:flex;align-items:center;gap:12px}
+header.top h1{font-size:2.1rem;color:var(--green-deep);line-height:1}
+header.top p{margin:2px 0 0;color:var(--muted);font-size:.9rem}
+
+nav.tabs{display:flex;gap:6px;flex-wrap:wrap}
+nav.tabs button{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;font-weight:700;color:var(--muted)}
+nav.tabs button[aria-selected="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.search{position:relative}
+.search input{padding-left:38px;background:var(--surface);border-radius:999px}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted)}
+
+.card{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.banner{display:flex;align-items:center;gap:12px;background:var(--soft-pink);border-radius:16px;padding:10px 14px}
+.banner b{color:var(--pink-deep)}
+.banner.green{background:var(--soft-green)}
+.banner.green b{color:var(--green-deep)}
+
+/* Календарь */
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.seg{display:inline-flex;border:2px solid var(--line);border-radius:999px;padding:2px;gap:2px}
+.seg button{border:0;background:transparent;border-radius:999px;padding:4px 14px;font-weight:800;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--pink-deep);color:#fff}
+.month-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.month-head h2{font-size:1.6rem;text-align:center}
+.icon-btn{border:2px solid var(--line);background:var(--surface);border-radius:12px;width:40px;height:40px;font-size:1.2rem;font-weight:800;color:var(--green-deep);flex:none}
+.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.wd{text-align:center;font-size:.75rem;font-weight:800;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;padding-bottom:2px}
+.day{position:relative;min-height:72px;border:2px solid transparent;border-radius:12px;background:var(--bg);padding:4px;display:flex;flex-direction:column;gap:2px;text-align:left;align-items:stretch;min-width:0}
+.day:hover{border-color:var(--green)}
+.day.out{opacity:.35}
+.day .n{font-weight:800;font-variant-numeric:tabular-nums;display:flex;justify-content:space-between;align-items:center;gap:2px}
+.day.today{border-color:var(--green-deep)}
+.day.today .n span:first-child{background:var(--green-deep);color:var(--surface);border-radius:999px;padding:0 6px}
+.day.period{background:var(--soft-pink)}
+.day .stk{position:absolute;right:1px;bottom:1px}
+.drop{color:var(--pink-deep);font-size:.8rem}
+.chip{font-size:.68rem;font-weight:800;border-radius:6px;padding:0 4px;background:var(--green);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dots{display:flex;gap:3px;margin-top:auto;flex-wrap:wrap;padding-right:24px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--cat,var(--green-deep));display:inline-block;flex:none}
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:.8rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.sw{width:12px;height:12px;border-radius:4px;display:inline-block}
+
+/* Неделя */
+.week-scroll{overflow:auto;max-height:68vh;border:2px solid var(--line);border-radius:14px}
+.week{display:grid;grid-template-columns:44px repeat(7,minmax(92px,1fr));min-width:690px}
+.wcorner{position:sticky;top:0;left:0;z-index:3;background:var(--surface);border-bottom:2px solid var(--line)}
+.wh{position:sticky;top:0;z-index:2;background:var(--surface);border:0;border-bottom:2px solid var(--line);border-left:1px solid var(--line);padding:4px 6px;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;min-height:66px;min-width:0}
+.wh .wn-day{font-weight:800;font-variant-numeric:tabular-nums}
+.wh .wn-day small{color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-right:4px}
+.wh.today .wn-day{color:var(--pink-deep)}
+.wh.period{background:var(--soft-pink)}
+.wh .wh-row{display:flex;gap:3px;align-items:center;max-width:100%}
+.wt{position:sticky;left:0;z-index:1;background:var(--surface);font-size:.72rem;color:var(--muted);font-weight:800;padding:2px 4px;border-top:1px dashed var(--line);font-variant-numeric:tabular-nums}
+.wc{border:0;border-top:1px dashed var(--line);border-left:1px solid var(--line);background:transparent;min-height:30px;padding:2px;display:flex;flex-direction:column;gap:2px;text-align:left;min-width:0}
+.wc:hover{background:var(--soft-green)}
+.wc.today{background:color-mix(in srgb,var(--soft-green) 55%,transparent)}
+.wn{font-size:.72rem;font-weight:700;border-radius:6px;padding:1px 5px;background:color-mix(in srgb,var(--cat) 26%,var(--surface));overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.list{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.item{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:12px;padding:8px 10px;flex-wrap:wrap}
+.item.click{cursor:pointer;border:0;text-align:left;width:100%}
+.item.click:hover{background:var(--soft-green)}
+.item .when{font-variant-numeric:tabular-nums;font-weight:800;color:var(--green-deep);min-width:64px}
+.item .txt{flex:1;min-width:0;overflow-wrap:anywhere}
+.item .sub{display:block;font-size:.78rem;color:var(--muted)}
+.item.done .txt{text-decoration:line-through;color:var(--muted)}
+.del{border:0;background:transparent;color:var(--muted);font-size:1.2rem;width:32px;height:32px;border-radius:8px;flex:none}
+.del:hover{background:var(--soft-pink);color:var(--pink-deep)}
+.empty{color:var(--muted);display:flex;align-items:center;gap:10px}
+.check{width:24px;height:24px;flex:none;accent-color:var(--green)}
+.small-btn{border:2px solid var(--line);background:var(--surface);border-radius:10px;padding:4px 10px;font-weight:700;font-size:.85rem;color:var(--green-deep)}
+.planform{display:flex;gap:6px;flex-wrap:wrap;width:100%}
+.planform input,.planform select{width:auto;flex:1;min-width:110px}
+
+/* Формы */
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;align-items:end}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.8rem;font-weight:700;color:var(--muted)}
+input,select{border:2px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 10px;min-width:0;width:100%}
+.btn{border:0;border-radius:12px;padding:10px 16px;font-weight:800;background:var(--green);color:#fff;box-shadow:var(--shadow)}
+.btn.pink{background:var(--pink-deep)}
+.btn.ghost{background:transparent;border:2px solid var(--line);color:var(--green-deep);box-shadow:none}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.quick button{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;font-weight:700}
+.hint{font-size:.85rem;color:var(--muted);margin:0}
+.cats{display:flex;flex-wrap:wrap;gap:6px}
+.catchip{position:relative}
+.catchip input{position:absolute;opacity:0;width:1px;height:1px}
+.catchip span{display:inline-flex;align-items:center;gap:5px;border:2px solid var(--line);border-radius:999px;padding:2px 10px;font-size:.82rem;font-weight:700;cursor:pointer;background:var(--surface)}
+.catchip span::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--cat)}
+.catchip input:checked+span{background:var(--cat);border-color:var(--cat);color:#fff}
+.catchip input:checked+span::before{background:#fff}
+.catchip input:focus-visible+span{outline:3px solid var(--pink-deep);outline-offset:2px}
+.bigstat{font-family:var(--display);font-size:2.6rem;line-height:1;color:var(--pink-deep)}
+.toggle{display:flex;align-items:center;gap:8px;font-weight:700}
+.toggle input{width:20px;height:20px;accent-color:var(--pink-deep)}
+
+/* Шторка дня */
+.sheet-bg{position:fixed;inset:0;background:rgba(20,30,18,.45);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:100%;max-width:760px;max-height:90vh;border-radius:24px 24px 0 0;display:flex;flex-direction:column;
+  padding:16px max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));gap:10px}
+.sheet-head{display:flex;align-items:center;gap:10px}
+.sheet-head h2{font-size:1.6rem;flex:1}
+.stickers{display:flex;gap:4px;overflow-x:auto;padding-bottom:4px;flex:none}
+.stk-btn{border:2px solid transparent;background:var(--bg);border-radius:12px;padding:3px 4px 2px;display:flex;flex-direction:column;align-items:center;font-size:.66rem;font-weight:700;color:var(--muted);flex:none;width:62px}
+.stk-btn[aria-pressed="true"]{border-color:var(--pink-deep);background:var(--soft-pink);color:var(--pink-deep)}
+.hours{overflow-y:auto;display:flex;flex-direction:column;gap:4px;padding-right:2px;min-height:120px}
+.hour{display:grid;grid-template-columns:52px minmax(0,1fr) 36px;gap:8px;align-items:start;border-top:1px dashed var(--line);padding-top:4px}
+.hour .t{font-variant-numeric:tabular-nums;font-weight:800;color:var(--muted);padding-top:6px}
+.hour.now .t{color:var(--pink-deep)}
+.add{border:2px dashed var(--line);background:transparent;border-radius:10px;width:36px;height:32px;color:var(--green-deep);font-weight:800}
+.note{background:color-mix(in srgb,var(--cat) 20%,var(--surface));border-radius:10px;padding:6px 8px;display:flex;gap:8px;align-items:center;margin-bottom:4px;flex-wrap:wrap}
+.note .txt{flex:1;min-width:0;overflow-wrap:anywhere}
+.note .sub{display:block;font-size:.75rem;color:var(--muted)}
+.note .confirm{width:100%;display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:.85rem}
+.addform{display:flex;flex-direction:column;gap:8px;background:var(--bg);border-radius:10px;padding:8px;margin-bottom:4px}
+
+/* Еда */
+.food-sum{display:flex;flex-direction:column;gap:10px}
+.unit{font-weight:800;color:var(--muted)}
+.macros{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.macro{background:var(--bg);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;min-width:0}
+.macro b{font-size:1.15rem;font-variant-numeric:tabular-nums}
+.mlabel{font-size:.78rem;color:var(--muted);font-weight:700;display:flex;align-items:center;gap:5px}
+.mbar{display:flex;height:12px;border-radius:999px;overflow:hidden;background:var(--bg)}
+.mbar span{display:block;height:100%}
+.meal{display:flex;flex-direction:column;gap:8px}
+.meal+.meal{border-top:2px dashed var(--line);padding-top:12px}
+.meal-head{display:flex;align-items:center;gap:8px}
+.meal-head h3{flex:1;font-size:1.3rem}
+.meal-head .sub{color:var(--muted);font-weight:700;font-size:.85rem;font-variant-numeric:tabular-nums}
+.item .kc{font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sug{display:flex;flex-direction:column;gap:4px}
+.sug button{border:0;background:var(--surface);border-radius:10px;padding:7px 10px;text-align:left;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.sug button:hover{background:var(--soft-green)}
+.sug small{color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.sug .mine{color:var(--pink-deep);font-weight:800;font-size:.72rem}
+.linkbtn{border:0;background:none;color:var(--pink-deep);font-weight:700;padding:0;text-align:left;text-decoration:underline;align-self:flex-start}
+.prev{font-weight:800;color:var(--green-deep);font-variant-numeric:tabular-nums}
+.nutri{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:6px}
+
+/* Тосты */
+.toasts{position:fixed;left:0;right:0;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:40;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.toast{pointer-events:auto;background:var(--surface);border:2px solid var(--pink);border-radius:18px;padding:8px 12px;display:flex;align-items:center;gap:10px;max-width:440px;width:100%;box-shadow:0 6px 18px rgba(0,0,0,.18);animation:pop .3s ease-out}
+.toast b{display:block;color:var(--pink-deep)}
+@keyframes pop{from{transform:translateY(12px);opacity:.4}to{transform:none;opacity:1}}
+.card.delay{flex-direction:row;flex-wrap:wrap;align-items:center;background:var(--soft-pink);border-color:var(--pink)}
+.shake .frog{animation:shake .5s ease-in-out infinite}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-1.5px)}75%{transform:translateX(1.5px)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+header.top .frog{animation:bob 2.4s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+@media (max-width:480px){.day{min-height:62px}.chip{font-size:.6rem}header.top h1{font-size:1.8rem}.month-head h2{font-size:1.3rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span id="hdrFrog"></span>
+    <div><h1>Жабий планер</h1><p id="todayLine"></p></div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="cal" aria-selected="true">Календарь</button>
+    <button role="tab" data-tab="todo" aria-selected="false">Дела</button>
+    <button role="tab" data-tab="food" aria-selected="false">Еда</button>
+    <button role="tab" data-tab="shift" aria-selected="false">Смены</button>
+    <button role="tab" data-tab="cycle" aria-selected="false">Цикл</button>
+    <button role="tab" data-tab="daily" aria-selected="false">Каждый день</button>
+  </nav>
+
+  <div class="search">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+    <input type="search" id="q" placeholder="Поиск по заметкам и делам" aria-label="Поиск">
+  </div>
+  <section class="card" id="searchRes" hidden></section>
+
+  <div id="banners" class="wrap" style="gap:8px"></div>
+
+  <!-- Календарь -->
+  <section data-panel="cal" class="wrap">
+    <div class="card">
+      <div class="toolbar">
+        <div class="seg" role="group" aria-label="Вид">
+          <button id="vMonth" aria-pressed="true">Месяц</button>
+          <button id="vWeek" aria-pressed="false">Неделя</button>
+        </div>
+        <button class="btn ghost" id="todayBtn" style="padding:4px 12px">Сегодня</button>
+      </div>
+      <div class="month-head">
+        <button class="icon-btn" id="prevM" aria-label="Назад">‹</button>
+        <h2 id="monthTitle"></h2>
+        <button class="icon-btn" id="nextM" aria-label="Вперёд">›</button>
+      </div>
+      <div class="grid" id="grid"></div>
+      <div class="week-scroll" id="weekScroll" hidden><div class="week" id="week"></div></div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="card">
+      <h3>Скоро</h3>
+      <ul class="list" id="upcoming"></ul>
+    </div>
+    <div class="card">
+      <div class="row">
+        <span id="notifFrog"></span>
+        <div style="flex:1;min-width:200px">
+          <h3 style="font-size:1.25rem">Уведомления</h3>
+          <p class="hint" id="notifState"></p>
+        </div>
+        <button class="btn pink" id="notifBtn">Разрешить</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Дела без даты -->
+  <section data-panel="todo" class="wrap" hidden>
+    <div class="card">
+      <div class="row"><span id="todoFrog"></span><div style="flex:1;min-width:200px"><h3>Дела без даты</h3>
+        <p class="hint">Записывай всё, что надо сделать когда-нибудь. Когда появится время, нажми «В календарь».</p></div></div>
+      <form class="form" id="todoForm">
+        <label class="f" style="grid-column:1/-1">Что сделать?<input type="text" id="tdText" maxlength="120" placeholder="Например: записаться к стоматологу" required></label>
+        <div class="cats" id="tdCats" style="grid-column:1/-1"></div>
+        <button class="btn" type="submit">Добавить дело</button>
+      </form>
+    </div>
+    <div class="card">
+      <ul class="list" id="todoList"></ul>
+      <button class="btn ghost" id="clearDone" hidden>Убрать выполненные</button>
+    </div>
+  </section>
+
+  <!-- Еда -->
+  <section data-panel="food" class="wrap" id="foodPanel" hidden>
+    <div class="card">
+      <div class="month-head">
+        <button class="icon-btn" id="foodPrev" aria-label="Предыдущий день">‹</button>
+        <h2 id="foodDate"></h2>
+        <button class="icon-btn" id="foodNext" aria-label="Следующий день">›</button>
+      </div>
+      <div class="row" style="justify-content:space-between">
+        <label class="toggle"><input type="checkbox" id="hideNums">Скрыть цифры</label>
+        <button class="btn ghost" id="foodToday" style="padding:4px 12px">Сегодня</button>
+      </div>
+      <div id="foodSum"></div>
+    </div>
+    <div class="card" id="foodMeals"></div>
+    <div class="card" id="myFoods" hidden></div>
+  </section>
+
+  <!-- Смены -->
+  <section data-panel="shift" class="wrap" hidden>
+    <div class="card">
+      <h3>Новый график</h3>
+      <p class="hint">Выбери день старта и схему: с этого дня жабка сама отметит рабочие дни.</p>
+      <div class="row quick" id="quickPat">
+        <button data-p="1,1">1/1</button><button data-p="2,2">2/2</button><button data-p="3,3">3/3</button>
+        <button data-p="1,3">1/3</button><button data-p="2,1">2/1</button><button data-p="5,2">5/2</button>
+      </div>
+      <form class="form" id="shiftForm">
+        <label class="f">Начало<input type="date" id="shStart" required></label>
+        <label class="f">Рабочих дней<input type="number" id="shOn" min="1" max="30" value="2" required></label>
+        <label class="f">Выходных<input type="number" id="shOff" min="0" max="30" value="2" required></label>
+        <label class="f">Подпись<input type="text" id="shLabel" value="Работа" maxlength="20" required></label>
+        <button class="btn" type="submit">Добавить график</button>
+      </form>
+    </div>
+    <div class="card">
+      <h3>Мои графики</h3>
+      <ul class="list" id="shiftList"></ul>
+    </div>
+  </section>
+
+  <!-- Цикл -->
+  <section data-panel="cycle" class="wrap" hidden>
+    <div id="delayBox"></div>
+    <div class="card">
+      <div class="row"><span id="cycleFrog"></span><h3 style="flex:1">Расскажи жабке про цикл</h3></div>
+      <form class="form" id="cycleForm">
+        <label class="f">Сколько дней длится цикл?<input type="number" id="cyLen" min="15" max="60" value="28" required></label>
+        <label class="f">Сколько дней идут месячные?<input type="number" id="cyDur" min="1" max="12" value="5" required></label>
+        <label class="f">Когда начались последние?<input type="date" id="cyLast" required></label>
+        <label class="f">За сколько дней предупредить?<input type="number" id="cyWarn" min="0" max="10" value="2" required></label>
+        <button class="btn pink" type="submit">Сохранить</button>
+      </form>
+      <div class="row" id="cycleActions"></div>
+      <p class="hint" id="cycleInfo"></p>
+    </div>
+    <div class="card" id="avgCard" hidden></div>
+  </section>
+
+  <!-- Каждый день -->
+  <section data-panel="daily" class="wrap" hidden>
+    <div class="card">
+      <h3>Напоминать каждый день</h3>
+      <form class="form" id="dailyForm">
+        <label class="f" style="grid-column:span 2">О чём напомнить?<input type="text" id="dlText" maxlength="80" placeholder="Например: выпить витамины" required></label>
+        <label class="f">Во сколько<input type="time" id="dlTime" value="09:00" required></label>
+        <button class="btn" type="submit">Добавить</button>
+      </form>
+    </div>
+    <div class="card">
+      <ul class="list" id="dailyList"></ul>
+    </div>
+  </section>
+</div>
+
+<div id="sheetRoot"></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script>
+const NATIVE=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform());
+const LN=()=>NATIVE?window.Capacitor.Plugins.LocalNotifications:null;
+let syncT;function scheduleSync(){if(!NATIVE)return;clearTimeout(syncT);syncT=setTimeout(syncNative,500)}
+/* ---------- жабки ---------- */
+const INK='var(--ink)';
+const PROPS={
+  cake:`<rect x="33" y="68" width="34" height="21" rx="3" fill="#fde3ea" stroke="${INK}" stroke-width="2.5"/><path d="M33 75 q8.5 5 17 0 q8.5 5 17 0" stroke="#df6688" stroke-width="3" fill="none"/><rect x="48" y="58" width="4" height="10" fill="#f2c230" stroke="${INK}" stroke-width="1.5"/><path d="M50 49 q-4 5 0 8 q4-3 0-8z" fill="#ff9a3c"/>`,
+  gift:`<rect x="34" y="71" width="32" height="19" fill="#f6b3c6" stroke="${INK}" stroke-width="2.5"/><rect x="31" y="65" width="38" height="7" fill="#df6688" stroke="${INK}" stroke-width="2.5"/><path d="M50 65 V90" stroke="#f2c230" stroke-width="4"/><path d="M50 65 q-11-10-13-2 q2 4 13 2 q11 2 13-2 q-2-8-13 2z" fill="#f2c230" stroke="${INK}" stroke-width="1.5"/>`,
+  suitcase:`<rect x="31" y="67" width="38" height="23" rx="4" fill="#e9a35c" stroke="${INK}" stroke-width="2.5"/><path d="M43 67 v-6 h14 v6" fill="none" stroke="${INK}" stroke-width="2.5"/><path d="M31 77 h38" stroke="${INK}" stroke-width="2"/><circle cx="40" cy="83" r="2" fill="${INK}"/><circle cx="60" cy="83" r="2" fill="${INK}"/>`,
+  book:`<path d="M29 70 L50 74 L71 70 L71 90 L50 94 L29 90Z" fill="#fff" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/><path d="M50 74 V94 M34 76 l11 2 M34 81 l11 2 M55 78 l11-2 M55 83 l11-2" stroke="${INK}" stroke-width="1.6"/>`,
+  popcorn:`<circle cx="40" cy="66" r="6" fill="#fff6d6" stroke="${INK}" stroke-width="1.5"/><circle cx="50" cy="62" r="6" fill="#fff6d6" stroke="${INK}" stroke-width="1.5"/><circle cx="60" cy="66" r="6" fill="#fff6d6" stroke="${INK}" stroke-width="1.5"/><path d="M33 68 L67 68 L62 92 L38 92Z" fill="#fff" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/><path d="M42 69 L44 91 M50 69 V91 M58 69 L56 91" stroke="#e85c5c" stroke-width="4"/>`,
+  star:`<path d="M50 60 l5.5 10.5 11.5 1.5 -8.5 7.5 2.5 11.5 -11-6 -11 6 2.5-11.5 -8.5-7.5 11.5-1.5z" fill="#f2c230" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/><path d="M14 20 l3 3 M86 20 l-3 3 M10 46 h5 M90 46 h-5" stroke="#f2c230" stroke-width="3" stroke-linecap="round"/>`,
+  dumbbell:`<rect x="27" y="70" width="9" height="18" rx="2" fill="#8a97a6" stroke="${INK}" stroke-width="2"/><rect x="64" y="70" width="9" height="18" rx="2" fill="#8a97a6" stroke="${INK}" stroke-width="2"/><rect x="36" y="77" width="28" height="4" fill="#5b6672" stroke="${INK}" stroke-width="1.5"/>`,
+  thermo:`<g transform="rotate(25 62 48)"><rect x="56" y="45" width="26" height="6" rx="3" fill="#fff" stroke="${INK}" stroke-width="1.5"/><rect x="58" y="47" width="10" height="2" fill="#e85c5c"/></g><path d="M20 14 q6 4 12 0 M68 14 q6 4 12 0" stroke="#7fc4ea" stroke-width="2.5" fill="none" stroke-linecap="round"/>`,
+  heart:`<path d="M50 92 c-14-9-20-16-15-22 c4-5 11-3 15 2 c4-5 11-7 15-2 c5 6-1 13-15 22z" fill="#df6688" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>`,
+  chef:`<path d="M33 15 q-11-3-6-11 q4-5 11-2 q4-6 12-1 q8-5 12 1 q7-3 11 2 q5 8-6 11z" fill="#fff" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/><rect x="33" y="14" width="34" height="7" rx="2" fill="#fff" stroke="${INK}" stroke-width="2.5"/><path d="M68 92 V70 M64 70 q4 -10 8 0 q-4 6 -8 0z" fill="#d8dde3" stroke="${INK}" stroke-width="2.5" stroke-linecap="round"/>`,
+  cup:`<path d="M36 70 h26 v12 a12 9 0 0 1 -26 0z" fill="#fff" stroke="${INK}" stroke-width="2.5"/><path d="M62 73 q8 0 7 6 q-1 5 -7 4" fill="none" stroke="${INK}" stroke-width="2.5"/><path d="M44 62 q-3-4 0-7 M52 62 q-3-4 0-7" stroke="var(--muted)" stroke-width="2" fill="none" stroke-linecap="round"/>`
+};
+function frog(mood='happy',s=56,prop=''){
+  const ink=INK;
+  let eyes=`<circle cx="33" cy="31" r="6.5" fill="${ink}"/><circle cx="67" cy="31" r="6.5" fill="${ink}"/>`;
+  let mouth=`<path d="M37 46 Q50 60 63 46 Q50 50 37 46Z" fill="var(--pink-deep)" stroke="${ink}" stroke-width="2.5" stroke-linejoin="round"/>`;
+  let extra='';
+  if(mood==='love'){extra=`<path d="M50 9 c-3-6-11-3-8 3 l8 7 8-7 c3-6-5-9-8-3z" fill="var(--pink-deep)"/><path d="M84 18 c-2-4-7-2-5 2 l5 4 5-4 c2-4-3-6-5-2z" fill="var(--pink-deep)"/>`;
+    extra+=`<ellipse cx="27" cy="44" rx="5" ry="3" fill="var(--pink)" opacity=".9"/><ellipse cx="73" cy="44" rx="5" ry="3" fill="var(--pink)" opacity=".9"/>`}
+  if(mood==='calm'){mouth=`<path d="M40 47 Q50 52 60 47" fill="none" stroke="${ink}" stroke-width="2.5" stroke-linecap="round"/>`}
+  if(mood==='shy'){mouth=`<path d="M43 48 Q50 52 57 48" fill="none" stroke="${ink}" stroke-width="2.5" stroke-linecap="round"/>`;
+    extra=`<ellipse cx="27" cy="44" rx="6" ry="3.5" fill="var(--pink)"/><ellipse cx="73" cy="44" rx="6" ry="3.5" fill="var(--pink)"/>`}
+  if(mood==='wow'){mouth=`<ellipse cx="50" cy="50" rx="7" ry="8" fill="var(--pink-deep)" stroke="${ink}" stroke-width="2.5"/>`;
+    extra=`<path d="M22 12 l4 7 M50 4 v8 M78 12 l-4 7" stroke="#f2c230" stroke-width="3" stroke-linecap="round"/>`}
+  if(mood==='worry'){eyes+=`<path d="M25 22 L39 17 M75 22 L61 17" stroke="${ink}" stroke-width="3" stroke-linecap="round"/>`;
+    mouth=`<path d="M37 50 q3.25-4 6.5 0 q3.25 4 6.5 0 q3.25-4 6.5 0 q3.25 4 6.5 0" fill="none" stroke="${ink}" stroke-width="2.5" stroke-linecap="round"/>`;
+    extra=`<path d="M88 30 q-6 9 0 11 q6-2 0-11z" fill="#7fc4ea" stroke="${ink}" stroke-width="1.5"/><path d="M12 40 q-5 7 0 9 q5-2 0-9z" fill="#7fc4ea" stroke="${ink}" stroke-width="1.5"/><path d="M4 62 v10 M96 62 v10 M8 78 v6 M92 78 v6" stroke="${ink}" stroke-width="2" stroke-linecap="round"/>`}
+  if(mood==='sick'){eyes=`<path d="M27 30 l12 3 M73 30 l-12 3" stroke="${ink}" stroke-width="3" stroke-linecap="round"/>`;
+    mouth=`<path d="M42 50 q8-4 16 0" fill="none" stroke="${ink}" stroke-width="2.5" stroke-linecap="round"/>`;extra=`<ellipse cx="27" cy="43" rx="6" ry="3.5" fill="#f08a8a"/><ellipse cx="73" cy="43" rx="6" ry="3.5" fill="#f08a8a"/>`}
+  if(mood==='sleep'){eyes=`<path d="M27 32 q6 4 12 0 M61 32 q6 4 12 0" fill="none" stroke="${ink}" stroke-width="3" stroke-linecap="round"/>`;
+    extra=`<text x="78" y="16" font-family="Neucha,cursive" font-size="14" fill="var(--muted)">z</text><text x="86" y="8" font-family="Neucha,cursive" font-size="10" fill="var(--muted)">z</text>`}
+  const arms = prop ? '' : mood==='wow'
+    ? `<path d="M16 70 C6 56 8 44 14 40" fill="none" stroke="${ink}" stroke-width="3" stroke-linecap="round"/><path d="M84 70 C94 56 92 44 86 40" fill="none" stroke="${ink}" stroke-width="3" stroke-linecap="round"/>`
+    : `<path d="M34 76 q8 8 16 2 q8 6 16-2" fill="none" stroke="var(--frog-dark)" stroke-width="3" stroke-linecap="round"/>`;
+  return `<svg class="frog" viewBox="0 0 100 100" width="${s}" height="${s}" aria-hidden="true">${extra}
+  <path d="M17 94 C13 64 15 42 23 33 C23 19 40 15 45 26 Q50 24 55 26 C60 15 77 19 77 33 C85 42 87 64 83 94 Z" fill="var(--frog)" stroke="${ink}" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M29 94 C27 72 35 61 50 61 C65 61 73 72 71 94 Z" fill="var(--belly)"/>
+  ${eyes}${mood==='sleep'||mood==='sick'?'':'<circle cx="35" cy="29" r="1.8" fill="#fff"/><circle cx="69" cy="29" r="1.8" fill="#fff"/>'}${mouth}${arms}${prop?PROPS[prop]:''}</svg>`;
+}
+const STICKERS=[
+  {id:'bday',label:'Днюха',mood:'happy',prop:'cake'},
+  {id:'gift',label:'Подарок',mood:'love',prop:'gift'},
+  {id:'date',label:'Свидание',mood:'love',prop:'heart'},
+  {id:'trip',label:'Поездка',mood:'wow',prop:'suitcase'},
+  {id:'study',label:'Учёба',mood:'calm',prop:'book'},
+  {id:'exam',label:'Экзамен',mood:'worry',prop:'book'},
+  {id:'movie',label:'Кино',mood:'happy',prop:'popcorn'},
+  {id:'party',label:'Праздник',mood:'wow',prop:'star'},
+  {id:'sport',label:'Спорт',mood:'happy',prop:'dumbbell'},
+  {id:'cozy',label:'Уют',mood:'calm',prop:'cup'},
+  {id:'yum',label:'Вкусно',mood:'happy',prop:'chef'},
+  {id:'sick',label:'Болею',mood:'sick',prop:'thermo'},
+  {id:'rest',label:'Отдых',mood:'sleep',prop:''}];
+const sticker=(id,s)=>{const st=STICKERS.find(x=>x.id===id);return st?frog(st.mood,s,st.prop):''};
+
+/* ---------- даты ---------- */
+const pad=n=>String(n).padStart(2,'0');
+const key=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parse=k=>{const[y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d)};
+const dnum=k=>{const[y,m,d]=k.split('-').map(Number);return Math.round(Date.UTC(y,m-1,d)/864e5)};
+const fromNum=n=>{const d=new Date(n*864e5);return `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}`};
+const MONTHS=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const MONTHS_G=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const WD=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+const WD_FULL=['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
+const human=k=>{const[y,m,d]=k.split('-').map(Number);return `${d} ${MONTHS_G[m-1]}`};
+const short=k=>{const[y,m,d]=k.split('-').map(Number);return `${d} ${MONTHS_G[m-1].slice(0,3)}`};
+const todayKey=()=>key(new Date());
+const uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function plural(n,a,b,c){n=Math.abs(n)%100;const n1=n%10;if(n>10&&n<20)return c;if(n1>1&&n1<5)return b;if(n1===1)return a;return c}
+const days=n=>`${n} ${plural(n,'день','дня','дней')}`;
+
+const REMINDS=[[0,'без напоминания'],[10,'за 10 минут'],[30,'за 30 минут'],[60,'за 1 час'],[180,'за 3 часа'],[1440,'за сутки'],[2880,'за 2 дня'],[10080,'за неделю'],['c','своё время…']];
+function remindLabel(m){const f=REMINDS.find(r=>r[0]===m);if(f)return f[1];
+  if(m%1440===0)return `за ${m/1440} ${plural(m/1440,'день','дня','дней')}`;
+  if(m%60===0)return `за ${m/60} ${plural(m/60,'час','часа','часов')}`;return `за ${m} мин`}
+const REPEATS=[['none','не повторять'],['daily','каждый день'],['weekdays','по будням'],['weekly','каждую неделю'],['monthly','каждый месяц'],['yearly','каждый год']];
+const repLabel=r=>(REPEATS.find(x=>x[0]===r)||REPEATS[0])[1];
+const CATS=[{id:'personal',label:'Личное'},{id:'study',label:'Учёба'},{id:'work',label:'Работа'},{id:'meet',label:'Встречи'},{id:'health',label:'Здоровье'},{id:'other',label:'Другое'}];
+const catVar=c=>`--cat:var(--c-${CATS.some(x=>x.id===c)?c:'other'})`;
+const catLabel=c=>(CATS.find(x=>x.id===c)||CATS[5]).label;
+const catChips=(name,sel)=>CATS.map(c=>`<label class="catchip" style="${catVar(c.id)}"><input type="radio" name="${name}" value="${c.id}"${c.id===sel?' checked':''}><span>${c.label}</span></label>`).join('');
+
+/* ---------- хранилище ---------- */
+const STORE='frog-planner-v1';
+let S;
+function seed(){const t=todayKey();return{
+  notes:[{id:uid(),date:t,hour:19,text:'Пример: позвонить подруге',remind:1440,cat:'personal',rep:'none',skip:[],done:[t]}],
+  shifts:[{id:uid(),start:t,on:2,off:2,label:'Работа'}],
+  cycle:null, stickers:{}, todos:[{id:uid(),text:'Пример: записаться к стоматологу',cat:'health',done:false}],
+  daily:[{id:uid(),text:'Пример: выпить стакан воды',time:'10:00',last:t}],
+  food:{[t]:[{id:uid(),meal:'breakfast',name:'Пример: овсянка на молоке',g:250,k:102,p:3.2,f:4.1,c:14.2}]},customFoods:[]}}
+try{S=JSON.parse(localStorage.getItem(STORE))}catch(e){S=null}
+if(!S||!Array.isArray(S.notes))S=seed();
+S.stickers=S.stickers||{};S.todos=S.todos||[];S.food=S.food||{};S.customFoods=S.customFoods||[];S.shifts=S.shifts||[];S.daily=S.daily||[];
+S.notes.forEach(n=>{n.cat=n.cat||'personal';n.rep=n.rep||'none';n.skip=n.skip||[];if(!n.done)n.done=n.fired?[n.date]:[];delete n.fired});
+if(S.cycle&&!S.cycle.history)S.cycle.history=[S.cycle.last];
+function save(){try{localStorage.setItem(STORE,JSON.stringify(S))}catch(e){}scheduleSync()}
+
+/* ---------- расчёты ---------- */
+function shiftsOn(k){const n=dnum(k);return S.shifts.filter(s=>{const d=n-dnum(s.start);if(d<0)return false;return d%(s.on+s.off)<s.on}).map(s=>s.label)}
+
+/* Повторы: одна запись в S.notes описывает всю серию */
+function occurs(n,k){
+  if(k<n.date||n.skip.includes(k))return false;
+  if(n.rep==='none')return k===n.date;
+  if(n.rep==='daily')return true;
+  const a=parse(n.date),b=parse(k);
+  if(n.rep==='weekly')return (dnum(k)-dnum(n.date))%7===0;
+  if(n.rep==='weekdays'){const w=b.getDay();return w>0&&w<6}
+  if(n.rep==='monthly'){const last=new Date(b.getFullYear(),b.getMonth()+1,0).getDate();return b.getDate()===Math.min(a.getDate(),last)}
+  if(n.rep==='yearly')return a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();
+  return false}
+const notesOn=k=>S.notes.filter(n=>occurs(n,k)).sort((a,b)=>a.hour-b.hour);
+const occTime=(n,k)=>{const[y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d,n.hour,0,0).getTime()};
+function nextOcc(n){const t=dnum(todayKey());for(let i=0;i<400;i++){const k=fromNum(t+i);if(occurs(n,k))return k}return n.date}
+
+/* Цикл: история начал → средняя длина */
+function hist(){const c=S.cycle;return [...new Set(c.history&&c.history.length?c.history:[c.last])].sort()}
+function avgInfo(){if(!S.cycle)return null;const h=hist(),d=[];
+  for(let i=1;i<h.length;i++){const x=dnum(h[i])-dnum(h[i-1]);if(x>=15&&x<=60)d.push(x)}
+  const r=d.slice(-6);if(!r.length)return null;
+  return{avg:Math.round(r.reduce((a,b)=>a+b,0)/r.length),n:r.length,min:Math.min(...r),max:Math.max(...r)}}
+function cLen(){const c=S.cycle,a=avgInfo();return a&&c.useAvg!==false?a.avg:c.len}
+function addStart(k){const c=S.cycle;c.history=[...new Set([...(c.history||[]),k])].sort();c.last=c.history[c.history.length-1];c.warned='';c.delayWarned=''}
+function delayDays(){const c=S.cycle;if(!c)return 0;const d=dnum(todayKey())-(dnum(c.last)+cLen());return d>0?d:0}
+function periodDay(k){const c=S.cycle;if(!c)return 0;
+  const h=hist();for(const s of h){const d=dnum(k)-dnum(s);if(d>=0&&d<c.dur)return d+1}
+  const d=dnum(k)-dnum(c.last);if(d<0)return 0;
+  if(delayDays()&&d>=cLen())return 0;const r=d%cLen();return r<c.dur?r+1:0}
+function nextPeriod(){const c=S.cycle;if(!c)return null;const L=cLen(),t=dnum(todayKey()),l=dnum(c.last);
+  let n=l;if(t>l)n=l+Math.ceil((t-l)/L)*L;if(delayDays())n=l+L;return{key:fromNum(n),days:n-t}}
+
+/* ---------- уведомления ---------- */
+function notify(title,body,mood='wow'){
+  const box=document.createElement('div');box.className='toast';
+  box.innerHTML=`${frog(mood,44)}<div style="flex:1;min-width:0"><b>${esc(title)}</b>${esc(body)}</div><button class="del" aria-label="Закрыть">×</button>`;
+  box.querySelector('button').onclick=()=>box.remove();
+  document.getElementById('toasts').append(box);setTimeout(()=>box.remove(),30000);
+  if(!NATIVE)try{if('Notification'in window&&Notification.permission==='granted')new Notification(title,{body})}catch(e){}
+}
+function tick(){
+  const now=Date.now(),t0=dnum(todayKey());let changed=false;
+  for(const n of S.notes){if(!n.remind)continue;const span=Math.ceil(n.remind/1440)+1;
+    for(let i=-1;i<=span;i++){const k=fromNum(t0+i);if(!occurs(n,k)||n.done.includes(k))continue;
+      const et=occTime(n,k);
+      if(now>=et-n.remind*60000){if(now<et)notify('Напоминание',`${human(k)} в ${pad(n.hour)}:00 — ${n.text}`);
+        n.done.push(k);if(n.done.length>40)n.done=n.done.slice(-40);changed=true}}}
+  const t=todayKey(),d=new Date(),hm=`${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  for(const r of S.daily){if(r.last!==t&&hm>=r.time){notify('Каждый день',r.text,'love');r.last=t;changed=true}}
+  if(S.cycle&&delayDays()&&S.cycle.delayWarned!==t){
+    notify('Задержка цикла',`Уже ${days(delayDays())}. Если месячные начались, отметь это в планере`,'worry');S.cycle.delayWarned=t;changed=true}
+  if(S.cycle){const np=nextPeriod();if(np.days>0&&np.days<=S.cycle.warn&&S.cycle.warned!==np.key){
+    notify('Скоро месячные',`Через ${days(np.days)}, ${human(np.key)}`,'shy');S.cycle.warned=np.key;changed=true}}
+  if(changed){save();renderAll()}
+}
+
+/* ---------- отрисовка ---------- */
+const $=id=>document.getElementById(id);
+let view='month',vy,vm,ws,scrollWeek=true;
+{const d=new Date();vy=d.getFullYear();vm=d.getMonth();ws=dnum(todayKey())-((d.getDay()+6)%7)}
+
+function renderBanners(){
+  const b=[];const t=todayKey();
+  const sh=shiftsOn(t),st=S.stickers[t];
+  b.push(`<div class="banner green">${st?sticker(st,40):frog(sh.length?'calm':'sleep',40)}<span>Сегодня ${sh.length?`<b>${esc(sh.join(', '))}</b>`:'<b>выходной</b>, можно отдохнуть'}</span></div>`);
+  if(S.cycle){const pd=periodDay(t),np=nextPeriod(),dl=delayDays();
+    if(dl)b.push(`<div class="banner shake">${frog('worry',44)}<span><b>Задержка ${days(dl)}</b>. Ждали ${human(np.key)}. Если начались, отметь на вкладке «Цикл»</span></div>`);
+    else if(pd)b.push(`<div class="banner">${frog('shy',40)}<span><b>Месячные: день ${pd} из ${S.cycle.dur}</b>. Береги себя</span></div>`);
+    else if(np.days<=S.cycle.warn)b.push(`<div class="banner">${frog('shy',40)}<span><b>Через ${days(np.days)}</b> ожидаются месячные (${human(np.key)})</span></div>`)}
+  $('banners').innerHTML=b.join('');
+}
+function renderLegend(){
+  $('legend').innerHTML=`<span><i class="sw" style="background:var(--green)"></i>смена</span>
+    <span><i class="sw" style="background:var(--soft-pink);border:1px solid var(--pink)"></i>месячные</span>`+
+    CATS.map(c=>`<span style="${catVar(c.id)}"><i class="dot"></i>${c.label}</span>`).join('');
+}
+function renderCal(){
+  const d0=new Date();$('todayLine').textContent=`Сегодня ${d0.getDate()} ${MONTHS_G[d0.getMonth()]}, ${WD_FULL[d0.getDay()]}`;
+  $('grid').hidden=view!=='month';$('weekScroll').hidden=view!=='week';
+  $('vMonth').setAttribute('aria-pressed',view==='month');$('vWeek').setAttribute('aria-pressed',view==='week');
+  view==='month'?renderMonth():renderWeek();
+}
+function renderMonth(){
+  $('monthTitle').textContent=`${MONTHS[vm]} ${vy}`;
+  const first=new Date(vy,vm,1),startOff=(first.getDay()+6)%7,t=todayKey();
+  let h=WD.map(w=>`<div class="wd">${w}</div>`).join('');
+  const total=Math.ceil((startOff+new Date(vy,vm+1,0).getDate())/7)*7;
+  for(let i=0;i<total;i++){const d=new Date(vy,vm,1-startOff+i),k=key(d);
+    const sh=shiftsOn(k),pd=periodDay(k),ns=notesOn(k),st=S.stickers[k];
+    const cls=['day',d.getMonth()!==vm?'out':'',k===t?'today':'',pd?'period':''].join(' ');
+    h+=`<button class="${cls}" data-day="${k}" aria-label="${human(k)}">
+      <span class="n"><span>${d.getDate()}</span>${pd?'<span class="drop">●</span>':''}</span>
+      ${sh.map(s=>`<span class="chip">${esc(s)}</span>`).join('')}
+      <span class="dots">${ns.slice(0,4).map(n=>`<i class="dot" style="${catVar(n.cat)}"></i>`).join('')}</span>
+      ${st?`<span class="stk">${sticker(st,26)}</span>`:''}</button>`}
+  $('grid').innerHTML=h;
+}
+function renderWeek(){
+  const t=todayKey(),keys=[...Array(7)].map((_,i)=>fromNum(ws+i)),nowH=new Date().getHours();
+  const a=parse(keys[0]),b=parse(keys[6]);
+  $('monthTitle').textContent=a.getMonth()===b.getMonth()?`${a.getDate()}–${b.getDate()} ${MONTHS_G[b.getMonth()]}`:`${short(keys[0])} – ${short(keys[6])}`;
+  const byDay=keys.map(k=>notesOn(k));
+  let h='<div class="wcorner"></div>';
+  keys.forEach((k,i)=>{const sh=shiftsOn(k),pd=periodDay(k),st=S.stickers[k];
+    h+=`<button class="wh${k===t?' today':''}${pd?' period':''}" data-day="${k}"><span class="wn-day"><small>${WD[i]}</small>${parse(k).getDate()}</span>
+      <span class="wh-row">${st?sticker(st,22):''}${sh.map(s=>`<span class="chip">${esc(s)}</span>`).join('')}</span></button>`});
+  for(let hr=0;hr<24;hr++){
+    h+=`<div class="wt" data-wt="${hr}">${pad(hr)}:00</div>`;
+    keys.forEach((k,i)=>{const ns=byDay[i].filter(n=>n.hour===hr);
+      h+=`<button class="wc${k===t?' today':''}" data-day="${k}" data-h="${hr}" aria-label="${human(k)}, ${pad(hr)}:00">${ns.map(n=>`<span class="wn" style="${catVar(n.cat)}">${esc(n.text)}</span>`).join('')}</button>`})}
+  $('week').innerHTML=h;
+  if(scrollWeek){scrollWeek=false;const r=$('week').querySelector('[data-wt="8"]');if(r)$('weekScroll').scrollTop=r.offsetTop-70}
+}
+function renderUpcoming(){
+  const now=Date.now(),t0=dnum(todayKey()),items=[];
+  for(let i=0;i<60&&items.length<6;i++){const k=fromNum(t0+i);
+    for(const n of notesOn(k)){if(occTime(n,k)<now-3600e3)continue;if(items.length>=6)break;
+      items.push(`<li><button class="item click" data-open="${k}" data-h="${n.hour}"><span class="when">${short(k)}<span class="sub">${pad(n.hour)}:00</span></span><span class="txt"><i class="dot" style="${catVar(n.cat)}"></i> ${esc(n.text)}<span class="sub">${n.remind?remindLabel(n.remind):'без напоминания'}${n.rep!=='none'?' · '+repLabel(n.rep):''}</span></span></button></li>`)}}
+  const np=nextPeriod();
+  if(np)items.push(`<li class="item"><span class="when" style="color:var(--pink-deep)">${short(np.key)}</span><span class="txt">Ожидаются месячные<span class="sub">${np.days<0?`задержка ${days(-np.days)}`:np.days?`через ${days(np.days)}`:'сегодня'}</span></span></li>`);
+  $('upcoming').innerHTML=items.join('')||`<li class="empty">${frog('sleep',40)}Пока ничего не запланировано. Нажми на день в календаре, чтобы добавить заметку.</li>`;
+}
+
+/* Дела */
+let planTodo=null;
+function renderTodos(){
+  if(!$('tdCats').innerHTML)$('tdCats').innerHTML=catChips('tdCat','personal');
+  const open=S.todos.filter(x=>!x.done),done=S.todos.filter(x=>x.done);
+  const row=x=>`<li class="item${x.done?' done':''}" style="${catVar(x.cat)}">
+    <input type="checkbox" class="check" data-tdcheck="${x.id}" ${x.done?'checked':''} aria-label="Сделано">
+    <span class="txt"><i class="dot"></i> ${esc(x.text)}<span class="sub">${catLabel(x.cat)}</span></span>
+    ${x.done?'':`<button class="small-btn" data-tdplan="${x.id}">В календарь</button>`}
+    <button class="del" data-tddel="${x.id}" aria-label="Удалить">×</button>
+    ${planTodo===x.id?`<form class="planform" data-tdform="${x.id}"><input type="date" id="tpDate" value="${todayKey()}" required>
+      <select id="tpHour">${[...Array(24)].map((_,h)=>`<option value="${h}"${h===12?' selected':''}>${pad(h)}:00</option>`).join('')}</select>
+      <button class="btn" type="submit" style="padding:6px 12px">Перенести</button><button class="btn ghost" type="button" data-tdcancel style="padding:6px 12px">Отмена</button>
+      <span class="hint" style="width:100%">Напомню за сутки, в календаре можно поменять.</span></form>`:''}</li>`;
+  $('todoList').innerHTML=open.map(row).join('')+done.map(row).join('')
+    ||`<li class="empty">${frog('calm',40)}Список пуст. Можно выдохнуть.</li>`;
+  $('clearDone').hidden=!done.length;
+}
+function renderShifts(){
+  $('shiftList').innerHTML=S.shifts.map(s=>`<li class="item"><span class="when">${s.on}/${s.off}</span><span class="txt"><b>${esc(s.label)}</b><span class="sub">с ${human(s.start)} ${s.start.slice(0,4)}</span></span><button class="del" data-delshift="${s.id}" aria-label="Удалить">×</button></li>`).join('')
+    ||`<li class="empty">${frog('calm',40)}Графиков пока нет.</li>`;
+}
+function renderCycle(){
+  const c=S.cycle;
+  if(c){$('cyLen').value=c.len;$('cyDur').value=c.dur;$('cyLast').value=c.last;$('cyWarn').value=c.warn;
+    const np=nextPeriod(),dl=delayDays(),L=cLen();
+    $('delayBox').innerHTML=dl?`<div class="card delay shake">${frog('worry',72)}<div style="flex:1;min-width:200px"><h3 style="color:var(--pink-deep)">Задержка ${days(dl)}</h3>
+      <p class="hint">Месячные ждали ${human(np.key)}, но начало пока не отмечено. Если они уже пришли, нажми «Начались сегодня» или отметь другой день ниже. Если задержка тянется больше недели, стоит сделать тест или сходить к гинекологу.</p></div></div>`:'';
+    $('cycleInfo').innerHTML=dl?`Отсчёт остановлен до отметки начала. Жабка будет напоминать о задержке раз в день.`
+      :`Следующие ожидаются <b>${human(np.key)}</b>${np.days?`, через ${days(np.days)}`:', сегодня'}. Считаю по циклу в ${days(L)}. Предупрежу за ${days(c.warn)}.`;
+    $('cycleActions').innerHTML=`<button class="btn pink" id="cyToday" type="button">Начались сегодня</button>
+      <input type="date" id="cyOther" aria-label="Другой день" style="width:auto;flex:1;min-width:140px" max="${todayKey()}">
+      <button class="btn ghost" id="cyOtherBtn" type="button">Начались в этот день</button>
+      <button class="btn ghost" id="cyClear" type="button">Сбросить</button>`;
+    const a=avgInfo(),h=hist();
+    $('avgCard').hidden=false;
+    $('avgCard').innerHTML=`<div class="row"><span>${frog(a?'love':'calm',48)}</span><h3 style="flex:1">Средний цикл</h3></div>`+
+      (a?`<div class="row" style="gap:16px"><span class="bigstat">${days(a.avg)}</span><span class="hint">по ${a.n} ${plural(a.n,'циклу','циклам','циклам')}${a.n>1?`, от ${a.min} до ${a.max} дней`:''}.<br>Ты указала ${days(c.len)}.</span></div>
+        <label class="toggle"><input type="checkbox" id="useAvg" ${c.useAvg!==false?'checked':''}>Считать прогноз по среднему</label>`
+        :`<p class="hint">Отмечай начало каждых месячных кнопкой «Начались сегодня». После двух отметок жабка посчитает средний цикл и будет предсказывать точнее.</p>`)+
+      `<h3 style="font-size:1.15rem">История начал</h3><ul class="list">${[...h].reverse().map((k,i,arr)=>{const prev=arr[i+1];
+        return `<li class="item"><span class="when" style="color:var(--pink-deep)">${short(k)}<span class="sub">${k.slice(0,4)}</span></span><span class="txt">${prev?`цикл ${days(dnum(k)-dnum(prev))}`:'первая отметка'}</span>${h.length>1?`<button class="del" data-delhist="${k}" aria-label="Удалить отметку">×</button>`:''}</li>`}).join('')}</ul>`;
+  }else{$('delayBox').innerHTML='';$('avgCard').hidden=true;$('cyLast').value=$('cyLast').value||todayKey();
+    $('cycleInfo').textContent='Ответь на вопросы, и жабка сама будет отсчитывать дни и заранее предупреждать.';$('cycleActions').innerHTML=''}
+}
+function renderDaily(){
+  $('dailyList').innerHTML=[...S.daily].sort((a,b)=>a.time.localeCompare(b.time)).map(r=>`<li class="item"><span class="when">${r.time}</span><span class="txt">${esc(r.text)}</span><button class="del" data-deldaily="${r.id}" aria-label="Удалить">×</button></li>`).join('')
+    ||`<li class="empty">${frog('calm',40)}Добавь то, о чём напоминать каждый день.</li>`;
+}
+function renderNotif(){if(NATIVE)return renderNotifNative();
+  let p='unsupported';try{if('Notification'in window)p=Notification.permission}catch(e){}
+  $('notifBtn').hidden=p!=='default';
+  $('notifState').textContent=p==='granted'?'Включены. Напоминания приходят, пока планер открыт во вкладке.'
+    :'Напоминания всплывают с жабкой внутри планера, пока он открыт.'+(p==='default'?' Можно попробовать разрешить и системные уведомления.':'');
+}
+
+/* Поиск */
+function renderSearch(){
+  const q=$('q').value.trim().toLowerCase(),box=$('searchRes');
+  if(!q){box.hidden=true;box.innerHTML='';return}
+  const re=new RegExp(esc(q).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
+  const hl=s=>esc(s).replace(re,m=>`<mark>${m}</mark>`);
+  const notes=S.notes.filter(n=>n.text.toLowerCase().includes(q)||catLabel(n.cat).toLowerCase().includes(q));
+  const todos=S.todos.filter(x=>x.text.toLowerCase().includes(q));
+  const daily=S.daily.filter(r=>r.text.toLowerCase().includes(q));
+  const cnt=notes.length+todos.length+daily.length;
+  box.hidden=false;
+  box.innerHTML=`<div class="row"><h3 style="flex:1">Нашлось: ${cnt}</h3><button class="small-btn" id="qClear">Очистить</button></div>`+
+    (cnt?`<ul class="list">${notes.map(n=>{const k=n.rep==='none'?n.date:nextOcc(n);
+      return `<li><button class="item click" data-open="${k}" data-h="${n.hour}"><span class="when">${short(k)}<span class="sub">${pad(n.hour)}:00</span></span><span class="txt"><i class="dot" style="${catVar(n.cat)}"></i> ${hl(n.text)}<span class="sub">${catLabel(n.cat)}${n.rep!=='none'?` · ${repLabel(n.rep)}, ближайшее ${short(k)}`:''}</span></span></button></li>`}).join('')}
+      ${todos.map(x=>`<li><button class="item click" data-gotab="todo"><span class="when">дело</span><span class="txt">${hl(x.text)}<span class="sub">${x.done?'сделано':'без даты'}</span></span></button></li>`).join('')}
+      ${daily.map(r=>`<li><button class="item click" data-gotab="daily"><span class="when">${r.time}</span><span class="txt">${hl(r.text)}<span class="sub">каждый день</span></span></button></li>`).join('')}</ul>`
+    :`<p class="empty">${frog('worry',40)}Ничего не нашлось. Попробуй другое слово.</p>`);
+}
+function renderAll(){renderBanners();renderLegend();renderCal();renderUpcoming();renderTodos();renderFood();renderShifts();renderCycle();renderDaily();renderSearch();if(openDay)renderSheet(true)}
+
+/* ---------- еда ---------- */
+/* название | ккал | белки | жиры | углеводы на 100 г | порция | граммов в порции */
+const FOOD_RAW=`Гречка варёная|110|4.2|1.1|21.3
+Гречка сухая|313|12.6|3.3|62.1
+Рис белый варёный|116|2.2|0.5|24.9
+Рис сухой|344|6.7|0.7|78.9
+Рис бурый варёный|111|2.6|0.9|23
+Овсянка на воде|88|3|1.7|15
+Овсянка на молоке|102|3.2|4.1|14.2
+Овсяные хлопья сухие|352|12.3|6.1|59.5
+Манная каша на молоке|98|3|3.2|15.3
+Пшённая каша|90|3|0.7|17
+Рисовая каша на молоке|97|2.9|2.9|15
+Макароны варёные|112|3.5|0.4|23.2
+Макароны сухие|338|10.4|1.1|71.5
+Спагетти варёные|112|3.5|0.4|23.2
+Булгур варёный|83|3.1|0.2|18.6
+Киноа варёная|120|4.4|1.9|21.3
+Кускус варёный|112|3.8|0.2|23.2
+Перловка варёная|109|3.1|0.4|22.2
+Картофель варёный|82|2|0.4|16.7
+Картофель запечённый|93|2.5|0.1|21
+Картофельное пюре|90|2|3.3|13
+Картофель жареный|192|2.8|9.5|23.4
+Картофель фри|312|3.4|15|41|1 порция|110
+Хлеб белый|265|8.1|3.2|48.8|1 кусок|30
+Хлеб бородинский|208|6.8|1.3|40.7|1 кусок|30
+Хлеб цельнозерновой|247|13|3.4|41|1 кусок|30
+Батон нарезной|264|7.5|2.9|51.4|1 кусок|25
+Лаваш тонкий|277|9.1|1.1|56.1|1 лист|80
+Хлебцы|300|11|2.5|60|1 шт|10
+Тортилья пшеничная|300|8|7|50|1 шт|60
+Круассан|406|8.2|21|45.8|1 шт|60
+Булочка сдобная|339|7.9|9.4|55.5|1 шт|80
+Блины|233|6.1|12.3|26|1 шт|50
+Оладьи|230|6.3|8.4|32|1 шт|40
+Сырники|220|15|9|18|1 шт|60
+Пирожок жареный с капустой|235|5|11|29|1 шт|70
+Пирожок печёный с яблоком|250|5.5|7|41|1 шт|70
+Пицца|260|11|10|31|1 кусок|120
+Бутерброд с сыром|320|11|15|35|1 шт|60
+Бутерброд с колбасой|300|10|16|29|1 шт|60
+Молоко 2,5%|52|2.8|2.5|4.7|1 стакан|250
+Молоко 3,2%|59|2.9|3.2|4.7|1 стакан|250
+Кефир 1%|40|2.8|1|4|1 стакан|250
+Кефир 2,5%|53|2.9|2.5|4|1 стакан|250
+Ряженка 4%|67|2.8|4|4.2|1 стакан|250
+Йогурт натуральный 2%|60|4.3|2|6.2|1 баночка|125
+Йогурт фруктовый|85|3|2.5|13|1 баночка|125
+Йогурт питьевой|70|2.8|1.5|11|1 бутылочка|270
+Творог 0%|71|16.5|0|1.3
+Творог 5%|121|17.2|5|1.8
+Творог 9%|159|16.7|9|2
+Творожная масса сладкая|340|7|23|27
+Сырок глазированный|410|8.5|25|38|1 шт|45
+Сметана 15%|158|2.6|15|3|1 ст. л.|20
+Сметана 20%|206|2.8|20|3.2|1 ст. л.|20
+Сливки 10%|118|3|10|4|1 ст. л.|15
+Сыр твёрдый|360|23|29|0.3|1 ломтик|20
+Сыр моцарелла|280|22|22|1
+Сыр фета|264|14|21|4
+Сыр плавленый|250|10|20|6|1 треугольник|20
+Сыр творожный|230|7|21|3|1 ст. л.|25
+Масло сливочное 82%|748|0.5|82.5|0.8|1 ч. л.|5
+Яйцо куриное|157|12.7|11.5|0.7|1 шт|55
+Яйцо варёное|157|12.7|11.5|0.7|1 шт|55
+Омлет|184|9.6|15.4|1.9|1 порция|150
+Яичница|196|13.6|15|0.9|из 2 яиц|110
+Куриная грудка варёная|137|29.8|1.8|0.5
+Куриная грудка запечённая|150|30|3|0
+Куриное филе жареное|160|30|4|0
+Куриное бедро запечённое|210|25|12|0|1 шт|120
+Куриные крылышки|240|19|18|0|1 шт|40
+Индейка филе|114|24|1.5|0
+Говядина варёная|254|25.8|16.8|0
+Говядина тушёная|232|16.8|18.3|0
+Фарш говяжий|254|17.2|20|0
+Свинина запечённая|260|22|19|0
+Шашлык свиной|324|20|26|1|1 шампур|200
+Котлета куриная|190|18|10|7|1 шт|80
+Котлета домашняя|240|14|17|8|1 шт|80
+Тефтели|200|12|13|9|1 шт|40
+Пельмени|275|11.9|12.4|29|10 шт|120
+Вареники с картошкой|148|4.5|3.5|24|10 шт|150
+Сосиски|260|11|23.9|1.6|1 шт|50
+Колбаса варёная|257|12.8|22.2|1.5|1 ломтик|20
+Колбаса копчёная|420|16|38|0.3|1 ломтик|10
+Ветчина|270|14|23|1|1 ломтик|20
+Бекон|500|23|45|0|1 полоска|15
+Печень куриная|140|20|6|1
+Лосось слабосолёный|202|22|12.5|0
+Лосось запечённый|205|22|13|0
+Минтай|79|17.6|1|0
+Треска запечённая|105|23|1|0
+Тунец консервированный|96|21|1|0|1 банка|185
+Сельдь солёная|246|17.7|19.5|0
+Креветки варёные|95|18.9|2.2|0
+Крабовые палочки|73|6|1|10|1 шт|20
+Роллы Филадельфия|160|6|6|20|1 шт|30
+Роллы Калифорния|175|6|7|22|1 шт|30
+Борщ|49|1.1|2.2|6.7|1 тарелка|300
+Щи|31|1.3|1.8|2.7|1 тарелка|300
+Куриный суп с лапшой|50|3|1.5|6|1 тарелка|300
+Солянка|69|4.6|4.4|2.6|1 тарелка|300
+Гороховый суп|66|4.4|2.4|7|1 тарелка|300
+Грибной суп-пюре|55|1.5|3|6|1 тарелка|300
+Рассольник|45|1.5|2|5.5|1 тарелка|300
+Окрошка на кефире|52|2.7|2.6|4.4|1 тарелка|300
+Уха|46|5|1.5|3|1 тарелка|300
+Салат оливье|198|5.5|16.5|7|1 порция|200
+Салат Цезарь с курицей|190|12|13|7|1 порция|200
+Винегрет|95|1.6|6|9|1 порция|150
+Салат из огурцов и помидоров с маслом|80|0.8|6.5|3.6|1 порция|150
+Салат из огурцов и помидоров со сметаной|60|1.1|4|4|1 порция|150
+Селёдка под шубой|190|6|15|8|1 порция|150
+Плов с курицей|150|8|5|19|1 порция|250
+Гречка с мясом|150|9|6|15|1 порция|250
+Макароны по-флотски|190|9|8|21|1 порция|250
+Паста карбонара|220|9|11|21|1 порция|250
+Голубцы|100|6|5|8|1 шт|150
+Лазанья|160|8|8|14|1 порция|250
+Рагу овощное|65|1.5|3|8|1 порция|200
+Жаркое с мясом|140|7|8|10|1 порция|250
+Шаурма|210|10|10|20|1 шт|350
+Бургер|250|13|12|24|1 шт|220
+Наггетсы|290|15|18|17|1 шт|17
+Хот-дог|260|10|14|24|1 шт|150
+Огурец|15|0.8|0.1|2.8|1 шт|120
+Помидор|20|0.6|0.2|4.2|1 шт|120
+Помидоры черри|18|0.8|0.2|3.5|1 шт|15
+Морковь|35|1.3|0.1|6.9|1 шт|80
+Капуста белокочанная|27|1.8|0.1|4.7
+Капуста тушёная|75|2|3.5|9|1 порция|200
+Брокколи|34|2.8|0.4|6.6
+Цветная капуста|30|2.5|0.3|5.4
+Перец болгарский|26|1.3|0.1|5.3|1 шт|150
+Лук репчатый|41|1.4|0.2|8.2|1 шт|80
+Кабачок|24|0.6|0.3|4.6
+Баклажан|24|1.2|0.1|4.5
+Свёкла варёная|49|1.8|0|10.8
+Шпинат|23|2.9|0.3|2
+Салат листовой|14|1.2|0.3|1.3
+Кукуруза консервированная|58|2.2|0.4|11.2|1 ст. л.|25
+Горошек зелёный консервированный|55|3.6|0.1|9.8|1 ст. л.|25
+Авокадо|160|2|14.7|8.5|1 шт|150
+Шампиньоны жареные|43|4|2.5|1
+Фасоль варёная|123|7.8|0.5|21.5
+Нут варёный|139|7.6|2.6|18.4
+Чечевица варёная|116|9|0.4|20
+Яблоко|47|0.4|0.4|9.8|1 шт|180
+Банан|96|1.5|0.2|21|1 шт|120
+Апельсин|43|0.9|0.2|8.1|1 шт|180
+Мандарин|38|0.8|0.2|7.5|1 шт|80
+Груша|47|0.4|0.3|10.3|1 шт|170
+Виноград|72|0.6|0.6|15.4|1 гроздь|150
+Киви|47|1|0.6|10.3|1 шт|75
+Хурма|67|0.5|0.4|15.3|1 шт|200
+Персик|45|0.9|0.1|9.5|1 шт|150
+Слива|49|0.8|0.3|9.6|1 шт|30
+Абрикос|44|0.9|0.1|9|1 шт|40
+Арбуз|27|0.6|0.1|5.8|1 долька|300
+Дыня|35|0.6|0.3|7.4|1 долька|200
+Клубника|41|0.8|0.4|7.5
+Черника|44|1.1|0.4|7.6
+Малина|46|0.8|0.5|8.3
+Вишня|52|0.8|0.2|10.6
+Ананас|52|0.4|0.2|11.5
+Манго|67|0.5|0.3|11.5|1 шт|300
+Грейпфрут|35|0.7|0.2|6.5|1 шт|350
+Гранат|72|0.7|0.6|14.5|1 шт|250
+Лимон|34|0.9|0.1|3|1 долька|10
+Изюм|264|2.9|0.6|66|1 ст. л.|20
+Курага|232|5.2|0.3|51|1 шт|8
+Финики|282|2.5|0.4|69|1 шт|8
+Чернослив|256|2.3|0.7|57.5|1 шт|8
+Грецкие орехи|654|15.2|65.2|7|1 горсть|30
+Миндаль|609|18.6|57.7|16.2|1 горсть|30
+Арахис|552|26.3|45.2|9.9|1 горсть|30
+Кешью|600|18.5|48.5|22.5|1 горсть|30
+Фундук|651|15|61|9.4|1 горсть|30
+Семечки подсолнечника|601|20.7|52.9|3.4|1 горсть|30
+Арахисовая паста|588|25|50|20|1 ч. л.|10
+Шоколад молочный|550|6.9|35.7|54.4|1 долька|5
+Шоколад горький|540|6.2|35.4|48.2|1 долька|5
+Шоколадная конфета|500|4|28|58|1 шт|12
+Шоколадный батончик|488|8|24|59|1 шт|50
+Печенье овсяное|437|6.5|14.4|71.8|1 шт|15
+Печенье сахарное|417|7.5|11.8|74.4|1 шт|10
+Пряник|350|5.6|5|70|1 шт|35
+Вафли|540|3.5|30|62|1 шт|15
+Торт наполеон|390|5|23|42|1 кусок|100
+Торт медовик|380|6|18|50|1 кусок|100
+Чизкейк|320|6|21|27|1 кусок|100
+Пирожное эклер|330|5|20|33|1 шт|60
+Пончик|400|5|22|45|1 шт|60
+Мороженое пломбир|232|3.2|15|20.8|1 стаканчик|80
+Зефир|326|0.8|0|79.8|1 шт|35
+Мармелад|321|0.1|0|79.4|1 шт|10
+Сахар|399|0|0|99.8|1 ч. л.|5
+Мёд|329|0.8|0|81.5|1 ч. л.|10
+Варенье|265|0.3|0.2|70|1 ст. л.|20
+Сгущёнка|320|7.2|8.5|56|1 ст. л.|25
+Шоколадная паста|540|6.3|31|57.5|1 ч. л.|12
+Чипсы картофельные|536|6.6|35|49|1 пачка|70
+Сухарики|400|11|9|68|1 пачка|40
+Попкорн сладкий|401|5.3|8.1|76|1 стакан|30
+Гранола|471|10|20|64|1 порция|50
+Мюсли|352|11|6|65|1 порция|50
+Кукурузные хлопья|357|7.5|1|83|1 порция|30
+Протеиновый батончик|350|30|10|35|1 шт|50
+Чай без сахара|1|0|0|0.2|1 кружка|250
+Кофе чёрный|2|0.2|0|0.3|1 кружка|250
+Капучино|50|2.8|2.4|4.2|1 стакан|300
+Латте|54|2.9|2.8|4.4|1 стакан|350
+Раф кофе|110|2.5|7|9|1 стакан|300
+Какао на молоке|74|3.2|3.4|8|1 кружка|250
+Сок апельсиновый|45|0.7|0.1|10.4|1 стакан|250
+Сок яблочный|46|0.5|0.1|10.1|1 стакан|250
+Газировка сладкая|42|0|0|10.6|1 банка|330
+Компот|50|0.2|0|12.5|1 стакан|250
+Морс|40|0.1|0|10|1 стакан|250
+Энергетик|45|0|0|11|1 банка|450
+Квас|27|0.2|0|5.2|1 стакан|250
+Смузи фруктовый|60|0.8|0.3|13|1 стакан|300
+Пиво светлое|42|0.3|0|4.6|1 бокал|500
+Вино сухое|68|0.2|0|0.3|1 бокал|150
+Майонез|627|0.4|67|3.9|1 ст. л.|15
+Кетчуп|93|1.8|1|22|1 ст. л.|15
+Масло подсолнечное|899|0|99.9|0|1 ст. л.|17
+Масло оливковое|898|0|99.8|0|1 ст. л.|17
+Соевый соус|53|6|0|7|1 ст. л.|15
+Хумус|166|8|9.6|14|1 ст. л.|25
+Песто|450|5|45|5|1 ст. л.|15`;
+const FOODS=FOOD_RAW.split('\n').map((l,i)=>{const[n,k,p,f,c,ul,ug]=l.split('|');return{id:'d'+i,name:n,k:+k,p:+p,f:+f,c:+c,ul:ul||'',ug:+ug||0}});
+const MEALS=[['breakfast','Завтрак','cup'],['lunch','Обед','chef'],['dinner','Ужин','chef'],['snack','Перекусы','popcorn']];
+const fmt=n=>Math.round(n).toLocaleString('ru-RU');
+const r1=n=>(Math.round(n*10)/10).toLocaleString('ru-RU');
+const allFoods=()=>[...S.customFoods.map(x=>({...x,id:'c'+x.id,mine:true})),...FOODS];
+const dayFood=k=>S.food[k]||[];
+function sumFood(list){const t={k:0,p:0,f:0,c:0};for(const e of list)for(const x in t)t[x]+=e[x]*e.g/100;return t}
+function recentFoods(){const seen=new Set(),out=[];
+  for(const k of Object.keys(S.food).sort().reverse())for(const e of [...S.food[k]].reverse()){
+    if(seen.has(e.name)||e.name.startsWith('Пример'))continue;seen.add(e.name);
+    const base=allFoods().find(x=>x.name===e.name);out.push(base||{id:'r'+e.id,name:e.name,k:e.k,p:e.p,f:e.f,c:e.c,ul:'',ug:0,lastG:e.g});
+    if(out.length>=8)return out}
+  return out}
+let foodDay=todayKey(),foodAdd=null,foodSel=null,customOpen=false,sugList=[];
+function renderFood(){
+  const qv=$('fq')?$('fq').value:'',gv=$('fg')?$('fg').value:null;
+  renderFoodInner();
+  if(qv&&$('fq')){$('fq').value=qv;renderSug()}
+  if(gv!==null&&$('fg')){$('fg').value=gv;updatePrev()}
+}
+function renderFoodInner(){
+  const t0=todayKey(),pd=parse(foodDay);
+  $('foodDate').textContent=(foodDay===t0?'Сегодня, ':'')+human(foodDay)+(foodDay===t0?'':`, ${WD_FULL[pd.getDay()]}`);
+  const list=dayFood(foodDay),t=sumFood(list),hide=!!S.hideNums;
+  $('hideNums').checked=hide;
+  if(hide)$('foodSum').innerHTML=`<div class="row">${frog('calm',48,'chef')}<p class="hint" style="flex:1;min-width:180px">Цифры спрятаны, остался только список блюд. Сними галочку, чтобы снова видеть калории.</p></div>`;
+  else{const E=t.p*4+t.f*9+t.c*4||1;
+    const M=[['Белки',t.p,'var(--pink-deep)',4],['Жиры',t.f,'var(--c-health)',9],['Углеводы',t.c,'var(--green)',4]];
+    $('foodSum').innerHTML=`<div class="food-sum"><div class="row">${frog(list.length?'happy':'calm',52,'chef')}<div><span class="bigstat">${fmt(t.k)}</span> <span class="unit">ккал за день</span></div></div>
+      <div class="macros">${M.map(m=>`<div class="macro"><span class="mlabel"><i class="dot" style="--cat:${m[2]}"></i>${m[0]}</span><b>${fmt(m[1])} г</b></div>`).join('')}</div>
+      ${list.length?`<div class="mbar" role="img" aria-label="Доли белков, жиров и углеводов">${M.map(m=>`<span style="width:${(m[1]*m[3]/E*100).toFixed(1)}%;background:${m[2]}"></span>`).join('')}</div>
+      <p class="hint">Полоска показывает, сколько калорий пришло из белков, жиров и углеводов.</p>`:''}</div>`}
+  $('foodMeals').innerHTML=MEALS.map(([id,label,prop])=>{
+    const items=list.filter(e=>e.meal===id),s=sumFood(items);
+    return `<div class="meal"><div class="meal-head">${frog('happy',36,prop)}<h3>${label}</h3>${hide||!items.length?'':`<span class="sub">${fmt(s.k)} ккал</span>`}
+      <button class="small-btn" data-fadd="${id}">+ Добавить</button></div>
+      ${items.length?`<ul class="list">${items.map(e=>`<li class="item"><span class="txt">${esc(e.name)}<span class="sub">${fmt(e.g)} г${hide?'':` · Б ${r1(e.p*e.g/100)} · Ж ${r1(e.f*e.g/100)} · У ${r1(e.c*e.g/100)}`}</span></span>${hide?'':`<span class="kc">${fmt(e.k*e.g/100)} ккал</span>`}<button class="del" data-fdel="${e.id}" aria-label="Удалить">×</button></li>`).join('')}</ul>`:''}
+      ${foodAdd===id?foodForm():''}</div>`}).join('');
+  if(foodAdd&&!foodSel&&!customOpen)renderSug();
+  if(foodSel)updatePrev();
+  $('myFoods').hidden=!S.customFoods.length;
+  $('myFoods').innerHTML=`<h3>Мои продукты</h3><ul class="list">${S.customFoods.map(x=>`<li class="item"><span class="txt">${esc(x.name)}<span class="sub">на 100 г: ${fmt(x.k)} ккал · Б ${r1(x.p)} · Ж ${r1(x.f)} · У ${r1(x.c)}</span></span><button class="del" data-cfdel="${x.id}" aria-label="Удалить">×</button></li>`).join('')}</ul>`;
+}
+function foodForm(){
+  if(customOpen)return `<form class="addform" id="customForm"><b>Свой продукт или блюдо</b>
+    <input id="cfName" maxlength="60" placeholder="Название, например: мамины сырники" required>
+    <span class="hint">На 100 граммов (посмотри на упаковке):</span>
+    <div class="nutri"><label class="f">Ккал<input id="cfK" type="number" min="0" max="900" step="any" required></label>
+    <label class="f">Белки, г<input id="cfP" type="number" min="0" max="100" step="any" value="0"></label>
+    <label class="f">Жиры, г<input id="cfF" type="number" min="0" max="100" step="any" value="0"></label>
+    <label class="f">Углеводы, г<input id="cfC" type="number" min="0" max="100" step="any" value="0"></label></div>
+    <div class="row"><button class="btn" type="submit">Сохранить</button><button class="btn ghost" type="button" id="cfBack">Назад</button></div></form>`;
+  if(foodSel){const x=foodSel,g=x.lastG||x.ug||100;
+    return `<form class="addform" id="gramForm"><b>${esc(x.name)}</b><span class="hint">на 100 г: ${fmt(x.k)} ккал · Б ${r1(x.p)} · Ж ${r1(x.f)} · У ${r1(x.c)}</span>
+      <div class="row"><label class="f" style="flex:1;min-width:120px">Сколько граммов<input id="fg" type="number" min="1" max="5000" step="any" value="${g}" required></label>
+      <button class="small-btn" type="button" data-portion="100">100 г</button>${x.ug?`<button class="small-btn" type="button" data-portion="${x.ug}">${esc(x.ul)} (${x.ug} г)</button>`:''}</div>
+      <span class="prev" id="fprev"></span>
+      <div class="row"><button class="btn" type="submit">Добавить</button><button class="btn ghost" type="button" id="fBack">Другой продукт</button><button class="btn ghost" type="button" id="fCancel">Отмена</button></div></form>`}
+  return `<div class="addform"><input id="fq" placeholder="Что ели? Например: гречка" autocomplete="off" aria-label="Поиск продукта">
+    <div class="sug" id="fsug"></div>
+    <div class="row" style="justify-content:space-between"><button class="linkbtn" id="fCustomBtn" type="button">Нет в списке? Добавить свой продукт</button><button class="small-btn" type="button" id="fCancel">Отмена</button></div></div>`;
+}
+function renderSug(){
+  const el=$('fsug');if(!el)return;const q=($('fq').value||'').trim().toLowerCase();
+  if(!q){sugList=recentFoods();el.innerHTML=sugList.length?`<span class="hint">Недавние:</span>`+sugRows():`<span class="hint">Начни вводить название, жабка подскажет.</span>`;return}
+  const words=q.split(/\s+/);
+  sugList=allFoods().filter(x=>{const n=x.name.toLowerCase();return words.every(w=>n.includes(w))})
+    .sort((a,b)=>(b.mine?1:0)-(a.mine?1:0)||(a.name.toLowerCase().startsWith(q)?0:1)-(b.name.toLowerCase().startsWith(q)?0:1)).slice(0,8);
+  el.innerHTML=sugList.length?sugRows():`<span class="hint">Такого нет в базе. Добавь его как свой продукт ниже.</span>`;
+}
+const sugRows=()=>sugList.map((x,i)=>`<button type="button" data-fpick="${i}"><span>${esc(x.name)} ${x.mine?'<span class="mine">мой</span>':''}</span><small>${fmt(x.k)} ккал/100 г</small></button>`).join('');
+function updatePrev(){const el=$('fprev');if(!el||!foodSel)return;const g=+$('fg').value||0,x=foodSel;
+  el.textContent=S.hideNums?`${fmt(g)} г`:`≈ ${fmt(x.k*g/100)} ккал · Б ${r1(x.p*g/100)} · Ж ${r1(x.f*g/100)} · У ${r1(x.c*g/100)}`}
+function closeFoodAdd(){foodAdd=null;foodSel=null;customOpen=false;renderFood()}
+
+/* ---------- шторка дня ---------- */
+let openDay=null,addingHour=null,pendingDel=null;
+function renderSheet(keepScroll){
+  const hs0=$('hours'),st0=hs0?hs0.scrollTop:0;
+  const k=openDay,sh=shiftsOn(k),pd=periodDay(k),notes=notesOn(k),d=new Date(),isToday=k===todayKey(),stk=S.stickers[k];
+  let hours='';
+  for(let h=0;h<24;h++){
+    const ns=notes.filter(n=>n.hour===h);
+    hours+=`<div class="hour${isToday&&d.getHours()===h?' now':''}" data-h="${h}"><span class="t">${pad(h)}:00</span><div>
+      ${ns.map(n=>`<div class="note" style="${catVar(n.cat)}"><i class="dot"></i><span class="txt">${esc(n.text)}<span class="sub">${catLabel(n.cat)} · ${n.remind?'🔔 '+remindLabel(n.remind):'без напоминания'}${n.rep!=='none'?' · '+repLabel(n.rep):''}</span></span><button class="del" data-delnote="${n.id}" aria-label="Удалить">×</button>
+        ${pendingDel===n.id?`<div class="confirm">Удалить повтор: <button class="small-btn" data-delone="${n.id}">только ${short(k)}</button><button class="small-btn" data-delall="${n.id}" style="color:var(--pink-deep)">всю серию</button><button class="small-btn" data-delcancel>отмена</button></div>`:''}</div>`).join('')}
+      ${addingHour===h?`<form class="addform" id="noteForm"><input id="nfText" maxlength="120" placeholder="Что запланировано?" required>
+        <div class="cats">${catChips('nfCat','personal')}</div>
+        <div class="row"><select id="nfRem" style="flex:1;min-width:140px" aria-label="Напоминание">${REMINDS.map(r=>`<option value="${r[0]}"${r[0]===1440?' selected':''}>${r[1]}</option>`).join('')}</select>
+        <input id="nfCustom" type="number" min="1" max="720" placeholder="часов" style="width:90px" hidden>
+        <select id="nfRep" style="flex:1;min-width:140px" aria-label="Повтор">${REPEATS.map(r=>`<option value="${r[0]}">${r[1]}</option>`).join('')}</select></div>
+        <div class="row"><button class="btn" type="submit">Сохранить</button><button class="btn ghost" type="button" id="nfCancel">Отмена</button></div></form>`:''}
+    </div><button class="add" data-addh="${h}" aria-label="Добавить на ${pad(h)}:00">+</button></div>`}
+  $('sheetRoot').innerHTML=`<div class="sheet-bg" id="sheetBg"><div class="sheet" role="dialog" aria-label="${human(k)}">
+    <div class="sheet-head">${stk?sticker(stk,50):frog(pd?'shy':sh.length?'calm':'happy',46)}<h2>${human(k)}</h2><button class="icon-btn" id="sheetClose" aria-label="Закрыть">×</button></div>
+    <div class="row">${sh.map(s=>`<span class="chip" style="font-size:.8rem;padding:2px 8px">${esc(s)}</span>`).join('')}
+      ${pd?`<span class="chip" style="background:var(--pink-deep);font-size:.8rem;padding:2px 8px">месячные, день ${pd}</span>`:''}
+      <button class="small-btn" id="startShiftHere">Начать график смен с этого дня</button>
+      <button class="small-btn" id="foodHere">Еда${dayFood(k).length&&!S.hideNums?`: ${fmt(sumFood(dayFood(k)).k)} ккал`:''}</button></div>
+    <div class="stickers" role="group" aria-label="Стикер дня">${STICKERS.map(s=>`<button class="stk-btn" data-stk="${s.id}" aria-pressed="${stk===s.id}">${frog(s.mood,40,s.prop)}${s.label}</button>`).join('')}</div>
+    <div class="hours" id="hours">${hours}</div></div></div>`;
+  if(keepScroll)$('hours').scrollTop=st0;
+  if(addingHour!==null){setTimeout(()=>{const i=$('nfText');i&&i.focus({preventScroll:true})},0)}
+}
+function openSheet(k,h){openDay=k;pendingDel=null;
+  const hasAt=h!=null&&notesOn(k).some(n=>n.hour===h);
+  addingHour=(h!=null&&!hasAt)?h:null;renderSheet();
+  const hs=$('hours'),target=hs.querySelector(`[data-h="${h??notesOn(k)[0]?.hour??8}"]`);if(target)hs.scrollTop=target.offsetTop-hs.offsetTop-8}
+function closeSheet(){openDay=null;addingHour=null;pendingDel=null;$('sheetRoot').innerHTML=''}
+
+/* ---------- события ---------- */
+document.querySelector('nav.tabs').onclick=e=>{const b=e.target.closest('[data-tab]');if(b)showTab(b.dataset.tab)};
+function showTab(t){document.querySelectorAll('[data-tab]').forEach(x=>x.setAttribute('aria-selected',x.dataset.tab===t));
+  document.querySelectorAll('[data-panel]').forEach(p=>p.hidden=p.dataset.panel!==t)}
+$('vMonth').onclick=()=>{view='month';const d=parse(fromNum(ws));vy=d.getFullYear();vm=d.getMonth();renderCal()};
+$('vWeek').onclick=()=>{view='week';const t=new Date(),inMonth=t.getFullYear()===vy&&t.getMonth()===vm;
+  const base=inMonth?t:new Date(vy,vm,1);ws=dnum(key(base))-((base.getDay()+6)%7);scrollWeek=true;renderCal()};
+$('prevM').onclick=()=>{if(view==='week'){ws-=7}else{vm--;if(vm<0){vm=11;vy--}}renderCal()};
+$('nextM').onclick=()=>{if(view==='week'){ws+=7}else{vm++;if(vm>11){vm=0;vy++}}renderCal()};
+$('todayBtn').onclick=()=>{const d=new Date();vy=d.getFullYear();vm=d.getMonth();ws=dnum(todayKey())-((d.getDay()+6)%7);scrollWeek=true;renderCal()};
+$('grid').onclick=e=>{const b=e.target.closest('[data-day]');if(b)openSheet(b.dataset.day)};
+$('week').onclick=e=>{const b=e.target.closest('[data-day]');if(b)openSheet(b.dataset.day,b.dataset.h!=null?+b.dataset.h:null)};
+document.addEventListener('click',e=>{
+  const o=e.target.closest('[data-open]');if(o){openSheet(o.dataset.open,+o.dataset.h);return}
+  const g=e.target.closest('[data-gotab]');if(g){showTab(g.dataset.gotab);$('q').value='';renderSearch()}
+  if(e.target.id==='qClear'){$('q').value='';renderSearch()}
+});
+$('q').addEventListener('input',renderSearch);
+
+$('sheetRoot').addEventListener('click',e=>{
+  if(e.target.id==='sheetBg'||e.target.closest('#sheetClose'))return closeSheet();
+  const s=e.target.closest('[data-stk]');if(s){const k=openDay;if(S.stickers[k]===s.dataset.stk)delete S.stickers[k];else S.stickers[k]=s.dataset.stk;save();renderAll();return}
+  const a=e.target.closest('[data-addh]');if(a){addingHour=+a.dataset.addh;pendingDel=null;renderSheet(true);return}
+  if(e.target.id==='nfCancel'){addingHour=null;renderSheet(true);return}
+  const dn=e.target.closest('[data-delnote]');if(dn){const n=S.notes.find(x=>x.id===dn.dataset.delnote);
+    if(n&&n.rep!=='none'){pendingDel=n.id;renderSheet(true);return}
+    S.notes=S.notes.filter(x=>x.id!==dn.dataset.delnote);save();renderAll();return}
+  const d1=e.target.closest('[data-delone]');if(d1){const n=S.notes.find(x=>x.id===d1.dataset.delone);n.skip.push(openDay);pendingDel=null;save();renderAll();return}
+  const da=e.target.closest('[data-delall]');if(da){S.notes=S.notes.filter(x=>x.id!==da.dataset.delall);pendingDel=null;save();renderAll();return}
+  if(e.target.closest('[data-delcancel]')){pendingDel=null;renderSheet(true);return}
+  if(e.target.id==='foodHere'){foodDay=openDay;closeSheet();showTab('food');closeFoodAdd();return}
+  if(e.target.id==='startShiftHere'){$('shStart').value=openDay;closeSheet();showTab('shift');$('shOn').focus()}
+});
+$('sheetRoot').addEventListener('change',e=>{if(e.target.id==='nfRem'){$('nfCustom').hidden=e.target.value!=='c'}});
+$('sheetRoot').addEventListener('submit',e=>{if(e.target.id!=='noteForm')return;e.preventDefault();
+  const text=$('nfText').value.trim();if(!text)return;let rv=$('nfRem').value,rem;
+  if(rv==='c'){const h=+$('nfCustom').value;rem=h>0?Math.round(h*60):1440}else rem=+rv;
+  const cat=(e.target.querySelector('input[name="nfCat"]:checked')||{}).value||'personal',rep=$('nfRep').value;
+  S.notes.push({id:uid(),date:openDay,hour:addingHour,text,remind:rem,cat,rep,skip:[],done:[]});
+  addingHour=null;save();renderAll();tick();
+  notify('Записала',`${human(openDay)} — ${text}. ${rem?'Напомню '+remindLabel(rem):'Без напоминания'}${rep!=='none'?', '+repLabel(rep):''}`,'happy');
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&openDay)closeSheet()});
+
+$('todoForm').onsubmit=e=>{e.preventDefault();const text=$('tdText').value.trim();if(!text)return;
+  const cat=(document.querySelector('input[name="tdCat"]:checked')||{}).value||'personal';
+  S.todos.unshift({id:uid(),text,cat,done:false});$('tdText').value='';save();renderAll()};
+$('todoList').addEventListener('change',e=>{const c=e.target.closest('[data-tdcheck]');if(!c)return;
+  const x=S.todos.find(t=>t.id===c.dataset.tdcheck);x.done=c.checked;save();renderAll();if(x.done)notify('Сделано!',x.text,'wow')});
+$('todoList').addEventListener('click',e=>{
+  const p=e.target.closest('[data-tdplan]');if(p){planTodo=p.dataset.tdplan;renderTodos();return}
+  if(e.target.closest('[data-tdcancel]')){planTodo=null;renderTodos();return}
+  const d=e.target.closest('[data-tddel]');if(d){S.todos=S.todos.filter(t=>t.id!==d.dataset.tddel);save();renderAll()}});
+$('todoList').addEventListener('submit',e=>{const f=e.target.closest('[data-tdform]');if(!f)return;e.preventDefault();
+  const x=S.todos.find(t=>t.id===f.dataset.tdform),date=$('tpDate').value,hour=+$('tpHour').value;
+  S.notes.push({id:uid(),date,hour,text:x.text,remind:1440,cat:x.cat,rep:'none',skip:[],done:[]});
+  S.todos=S.todos.filter(t=>t.id!==x.id);planTodo=null;save();renderAll();tick();
+  notify('Перенесла в календарь',`${human(date)} в ${pad(hour)}:00 — ${x.text}`,'happy')});
+$('clearDone').onclick=()=>{S.todos=S.todos.filter(t=>!t.done);save();renderAll()};
+
+/* Еда: события */
+const fp=$('foodPanel');
+$('foodPrev').onclick=()=>{foodDay=fromNum(dnum(foodDay)-1);closeFoodAdd()};
+$('foodNext').onclick=()=>{foodDay=fromNum(dnum(foodDay)+1);closeFoodAdd()};
+$('foodToday').onclick=()=>{foodDay=todayKey();closeFoodAdd()};
+$('hideNums').onchange=e=>{S.hideNums=e.target.checked;save();renderAll()};
+fp.addEventListener('input',e=>{if(e.target.id==='fq')renderSug();if(e.target.id==='fg')updatePrev()});
+fp.addEventListener('click',e=>{
+  const a=e.target.closest('[data-fadd]');if(a){foodAdd=a.dataset.fadd;foodSel=null;customOpen=false;renderFood();const q=$('fq');q&&q.focus();return}
+  const pk=e.target.closest('[data-fpick]');if(pk){foodSel=sugList[+pk.dataset.fpick];renderFood();const g=$('fg');g&&g.select();return}
+  const po=e.target.closest('[data-portion]');if(po){$('fg').value=po.dataset.portion;updatePrev();return}
+  if(e.target.id==='fCustomBtn'){const q=$('fq').value.trim();customOpen=true;renderFood();$('cfName').value=q;($('cfName').value?$('cfK'):$('cfName')).focus();return}
+  if(e.target.id==='cfBack'){customOpen=false;renderFood();$('fq')&&$('fq').focus();return}
+  if(e.target.id==='fBack'){foodSel=null;renderFood();$('fq')&&$('fq').focus();return}
+  if(e.target.id==='fCancel'){closeFoodAdd();return}
+  const d=e.target.closest('[data-fdel]');if(d){S.food[foodDay]=dayFood(foodDay).filter(x=>x.id!==d.dataset.fdel);if(!S.food[foodDay].length)delete S.food[foodDay];save();renderAll();return}
+  const c=e.target.closest('[data-cfdel]');if(c){S.customFoods=S.customFoods.filter(x=>x.id!==c.dataset.cfdel);save();renderAll()}
+});
+fp.addEventListener('submit',e=>{e.preventDefault();
+  if(e.target.id==='customForm'){const x={id:uid(),name:$('cfName').value.trim(),k:+$('cfK').value||0,p:+$('cfP').value||0,f:+$('cfF').value||0,c:+$('cfC').value||0};
+    if(!x.name)return;S.customFoods.push(x);save();customOpen=false;foodSel={...x,id:'c'+x.id,mine:true,ul:'',ug:0};renderAll();$('fg')&&$('fg').select();return}
+  if(e.target.id==='gramForm'){const g=+$('fg').value;if(!(g>0))return;const x=foodSel;
+    (S.food[foodDay]=S.food[foodDay]||[]).push({id:uid(),meal:foodAdd,name:x.name,g,k:x.k,p:x.p,f:x.f,c:x.c});
+    const meal=(MEALS.find(m=>m[0]===foodAdd)||[])[1];foodAdd=null;foodSel=null;save();renderAll();
+    notify('Записала',`${meal}: ${x.name}, ${fmt(g)} г${S.hideNums?'':` (${fmt(x.k*g/100)} ккал)`}`,'happy')}
+});
+
+$('quickPat').onclick=e=>{const b=e.target.closest('[data-p]');if(!b)return;const[on,off]=b.dataset.p.split(',');$('shOn').value=on;$('shOff').value=off};
+$('shStart').value=todayKey();
+$('shiftForm').onsubmit=e=>{e.preventDefault();
+  S.shifts.push({id:uid(),start:$('shStart').value,on:Math.max(1,+$('shOn').value),off:Math.max(0,+$('shOff').value),label:$('shLabel').value.trim()||'Работа'});
+  save();renderAll();notify('График добавлен',`${$('shOn').value} через ${$('shOff').value} с ${human($('shStart').value)}`,'happy')};
+$('shiftList').onclick=e=>{const b=e.target.closest('[data-delshift]');if(!b)return;S.shifts=S.shifts.filter(s=>s.id!==b.dataset.delshift);save();renderAll()};
+
+$('cycleForm').onsubmit=e=>{e.preventDefault();const prev=S.cycle;
+  S.cycle={len:+$('cyLen').value,dur:+$('cyDur').value,last:$('cyLast').value,warn:+$('cyWarn').value,warned:'',delayWarned:'',
+    history:prev?prev.history:[],useAvg:prev?prev.useAvg:true};
+  addStart($('cyLast').value);save();renderAll();
+  notify('Цикл сохранён',`Следующие ожидаются ${human(nextPeriod().key)}`,'love');tick()};
+$('cycleActions').addEventListener('click',e=>{
+  if(e.target.id==='cyToday'){addStart(todayKey());save();renderAll();notify('Отметила','Начало цикла сегодня, отсчёт пошёл заново','love')}
+  if(e.target.id==='cyOtherBtn'){const v=$('cyOther').value;if(!v)return notify('Выбери день','Поставь дату рядом с кнопкой','calm');
+    addStart(v);save();renderAll();notify('Отметила',`Начало цикла ${human(v)}`,'love')}
+  if(e.target.id==='cyClear'){S.cycle=null;save();renderAll()}});
+$('avgCard').addEventListener('change',e=>{if(e.target.id==='useAvg'){S.cycle.useAvg=e.target.checked;S.cycle.warned='';save();renderAll()}});
+$('avgCard').addEventListener('click',e=>{const b=e.target.closest('[data-delhist]');if(!b)return;
+  const c=S.cycle;c.history=hist().filter(k=>k!==b.dataset.delhist);c.last=c.history[c.history.length-1];save();renderAll()});
+
+$('dailyForm').onsubmit=e=>{e.preventDefault();const text=$('dlText').value.trim();if(!text)return;
+  const time=$('dlTime').value,d=new Date(),hm=`${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  S.daily.push({id:uid(),text,time,last:hm>=time?todayKey():''});save();$('dlText').value='';renderAll()};
+$('dailyList').onclick=e=>{const b=e.target.closest('[data-deldaily]');if(!b)return;S.daily=S.daily.filter(r=>r.id!==b.dataset.deldaily);save();renderAll()};
+
+$('notifBtn').onclick=async()=>{if(NATIVE)return askNative();try{await Notification.requestPermission()}catch(e){}renderNotif()};
+
+$('hdrFrog').innerHTML=frog('happy',58);
+$('notifFrog').innerHTML=frog('wow',48);
+$('cycleFrog').innerHTML=frog('love',48);
+$('todoFrog').innerHTML=frog('calm',48,'book');
+save();renderAll();renderNotif();
+setTimeout(tick,1500);setInterval(tick,20000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderAll();tick();scheduleSync()}});
+
+/* ---------- Android: системные уведомления, кнопка «назад» ---------- */
+async function renderNotifNative(){
+  const ln=LN();let d='prompt',ex='granted';
+  try{d=(await ln.checkPermissions()).display}catch(e){}
+  try{ex=(await ln.checkExactNotificationSetting()).exact_alarm}catch(e){}
+  const btn=$('notifBtn');btn.hidden=d==='granted'&&ex==='granted';
+  btn.textContent=d!=='granted'?'Разрешить':'Точное время';
+  $('notifState').textContent=d!=='granted'
+    ?'Разреши уведомления, чтобы жабка напоминала, даже когда приложение закрыто.'
+    :ex!=='granted'
+      ?'Уведомления включены, но телефон может присылать их с опозданием. Нажми «Точное время» и включи «Будильники и напоминания».'
+      :'Включены. Напоминания придут, даже если приложение закрыто.';
+}
+async function askNative(){
+  const ln=LN();
+  try{const p=await ln.checkPermissions();
+    if(p.display!=='granted')await ln.requestPermissions();
+    else await ln.changeExactNotificationSetting()}catch(e){}
+  renderNotifNative();syncNative();
+}
+/* Каждый раз пересобираем расписание: отменяем запланированное и ставим заново на 60 дней вперёд */
+async function syncNative(){
+  const ln=LN();if(!ln)return;
+  try{
+    const perm=await ln.checkPermissions();if(perm.display!=='granted')return;
+    let exact=true;try{exact=(await ln.checkExactNotificationSetting()).exact_alarm==='granted'}catch(e){}
+    const pend=await ln.getPending();
+    if(pend.notifications.length)await ln.cancel({notifications:pend.notifications.map(n=>({id:n.id}))});
+    const now=Date.now(),t0=dnum(todayKey()),timed=[],list=[];let id=1;
+    const base={channelId:'frog',smallIcon:'ic_stat_frog',iconColor:'#5fa443',isExactNotification:exact};
+    const at=(title,body,ms,extra)=>timed.push({...base,title,body,extra,schedule:{at:new Date(ms),allowWhileIdle:true}});
+    for(const n of S.notes){if(!n.remind)continue;
+      for(let i=0;i<60;i++){const k=fromNum(t0+i);if(!occurs(n,k)||n.done.includes(k))continue;
+        const ms=occTime(n,k)-n.remind*60000;
+        if(ms>now)at('Напоминание',`${human(k)} в ${pad(n.hour)}:00 — ${n.text}`,ms,{day:k,h:n.hour})}}
+    if(S.cycle){
+      const ten=k=>{const d=parse(k);d.setHours(10,0,0,0);return d.getTime()};
+      if(!delayDays()){const np=nextPeriod(),wk=fromNum(dnum(np.key)-S.cycle.warn);
+        if(S.cycle.warn>0&&ten(wk)>now)at('Скоро месячные',`Через ${days(S.cycle.warn)}, ${human(np.key)}`,ten(wk),{tab:'cycle'})}
+      const exp=dnum(S.cycle.last)+cLen();
+      for(let d=1;d<=14;d++){const k=fromNum(exp+d);if(ten(k)>now)
+        at('Задержка цикла',`Уже ${days(d)}. Если месячные начались, отметь это в планере`,ten(k),{tab:'cycle'})}
+    }
+    timed.sort((a,b)=>a.schedule.at-b.schedule.at);
+    for(const x of timed.slice(0,300))list.push({...x,id:id++});
+    for(const r of S.daily){const[h,m]=r.time.split(':').map(Number);
+      list.push({...base,id:id++,title:'Каждый день',body:r.text,extra:{tab:'daily'},schedule:{on:{hour:h,minute:m},allowWhileIdle:true}})}
+    if(list.length)await ln.schedule({notifications:list});
+  }catch(e){console.warn('sync',e)}
+}
+if(NATIVE){
+  const App=window.Capacitor.Plugins.App,ln=LN();
+  App.addListener('backButton',()=>{
+    if(openDay)return closeSheet();
+    const cur=document.querySelector('[data-tab][aria-selected="true"]');
+    if(cur&&cur.dataset.tab!=='cal')return showTab('cal');
+    App.exitApp()});
+  App.addListener('resume',()=>{renderAll();tick();renderNotif();scheduleSync()});
+  ln.createChannel({id:'frog',name:'Напоминания',description:'Заметки, цикл и ежедневные напоминания',importance:5,vibration:true}).catch(()=>{});
+  ln.addListener('localNotificationActionPerformed',a=>{const x=(a.notification&&a.notification.extra)||{};
+    if(x.day)openSheet(x.day,x.h??null);else if(x.tab)showTab(x.tab)});
+  (async()=>{try{const p=await ln.checkPermissions();if(p.display!=='granted')await ln.requestPermissions()}catch(e){}
+    renderNotif();syncNative()})();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "appId": "com.zhabiy.planer",
+  "appName": "Жабий планер",
+  "webDir": "www",
+  "android": { "backgroundColor": "#f3f9ee" },
+  "plugins": {
+    "LocalNotifications": { "smallIcon": "ic_stat_frog", "iconColor": "#5fa443" },
+    "SystemBars": { "insetsHandling": "css", "initialViewportFitValueHint": "cover" }
+  }
+}
